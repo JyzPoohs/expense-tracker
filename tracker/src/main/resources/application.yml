@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: tracker
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/expense_be_db
+    username: root
+    password: password
+
+  flyway:
+    enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  logging:
+    level:
+      org.flywaydb: DEBUG
+      org.springframework.boot.autoconfigure.flyway: DEBUG
