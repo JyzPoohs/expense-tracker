@@ -1,4 +1,8 @@
 package com.expense.tracker.repository;
 
-public class TransactionRepository {
+import com.expense.tracker.entity.Transaction;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
 }
