@@ -15,4 +15,14 @@ public class TransactionMapper {
                 .date(transaction.getDate())
                 .build();
     }
+
+    public Transaction toEntity(TransactionDTO transactionDTO) {
+        return Transaction.builder()
+                .description(transactionDTO.getDescription())
+                .amount(transactionDTO.getAmount())
+                .type(transactionDTO.getType())
+                .category(transactionDTO.getCategory())
+                .date(transactionDTO.getDate())
+                .build();
+    }
 }

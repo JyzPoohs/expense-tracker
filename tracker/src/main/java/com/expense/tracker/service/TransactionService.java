@@ -6,9 +6,14 @@ import com.expense.tracker.entity.Transaction;
 import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.mapper.TransactionMapper;
 import com.expense.tracker.repository.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
+@Transactional
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper mapper;
@@ -18,10 +23,26 @@ public class TransactionService {
         this.mapper = mapper;
     }
 
+    public TransactionDTO create(TransactionDTO transactionDTO) {
+        Transaction transaction = mapper.toEntity(transactionDTO);
+        transaction.setCreatedAt(LocalDateTime.now());
+        transaction.setUpdatedAt(LocalDateTime.now());
+
+        return mapper.toDTO(transactionRepository.save(transaction));
+    }
+
     public TransactionDTO getById(Long id) {
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND,"Transaction not found with id: " + 1));
+                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND, "Transaction not found with id: " + 1));
 
         return mapper.toDTO(transaction);
+    }
+
+    public List<TransactionDTO> getAll() {
+        return transactionRepository
+                .findAll()
+                .stream()
+                .map(mapper::toDTO)
+                .toList();
     }
 }
