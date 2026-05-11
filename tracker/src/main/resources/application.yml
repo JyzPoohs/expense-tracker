@@ -5,6 +5,10 @@ spring:
   application:
     name: tracker
 
+  docker:
+    compose:
+      enabled: false
+
   datasource:
     url: jdbc:mysql://localhost:3306/expense_be_db
     username: root
@@ -16,8 +20,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-
-  logging:
-    level:
-      org.flywaydb: DEBUG
-      org.springframework.boot.autoconfigure.flyway: DEBUG
