@@ -65,4 +65,14 @@ public class TransactionService {
 
         transactionRepository.delete(transaction);
     }
+
+    public List<TransactionDTO> getByType(String type) {
+        return transactionRepository.findAll().stream()
+                .filter(transaction -> transaction.getType().equals(type)).map(mapper::toDTO).toList();
+    }
+
+    public List<TransactionDTO> getByCategory(String category) {
+        return transactionRepository.findAll().stream()
+                .filter(transaction -> transaction.getCategory().equals(category)).map(mapper::toDTO).toList();
+    }
 }
