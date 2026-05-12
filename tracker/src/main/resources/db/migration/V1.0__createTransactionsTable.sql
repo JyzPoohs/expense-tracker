@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     date DATETIME NOT NULL COMMENT 'date',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE INDEX idx_transaction_date ON transactions(date);
 CREATE INDEX idx_transaction_type ON transactions(type);
