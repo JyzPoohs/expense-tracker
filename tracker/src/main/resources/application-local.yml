@@ -4,6 +4,12 @@ spring:
     username: root
     password: password
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/expense-realm
+
   jpa:
     hibernate:
       ddl-auto: none
