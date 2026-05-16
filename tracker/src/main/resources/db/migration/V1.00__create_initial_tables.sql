@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE categories
+CREATE TABLE IF NOT EXISTS categories
 (
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id    BIGINT       NOT NULL,
