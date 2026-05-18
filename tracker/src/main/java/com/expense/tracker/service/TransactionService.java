@@ -34,10 +34,11 @@ public class TransactionService {
         return mapper.toDTO(transaction);
     }
 
-    public List<TransactionDTO> getAll() {
+    public List<TransactionDTO> getAll(Long user_id) {
         return transactionRepository
                 .findAll()
                 .stream()
+                .filter(transaction -> transaction.getUser_id().equals(user_id))
                 .map(mapper::toDTO)
                 .toList();
     }

@@ -28,9 +28,9 @@ public class TransactionController {
         return transactionService.getById(id);
     }
 
-    @GetMapping
-    public ResponseEntity<List<TransactionDTO>> getAll() {
-        return ResponseEntity.ok(transactionService.getAll());
+    @GetMapping("/all/{user_id}")
+    public ResponseEntity<List<TransactionDTO>> getAll(@PathVariable Long user_id) {
+        return ResponseEntity.ok(transactionService.getAll(user_id));
     }
 
     @PutMapping("/{id}")

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class TransactionMapper {
     public TransactionDTO toDTO(Transaction transaction) {
         return TransactionDTO.builder()
+                .user_id(transaction.getUser_id())
                 .note(transaction.getNote())
                 .amount(transaction.getAmount())
                 .type(transaction.getType())
@@ -19,6 +20,7 @@ public class TransactionMapper {
 
     public Transaction toEntity(TransactionDTO transactionDTO) {
         return Transaction.builder()
+                .user_id(transactionDTO.getUser_id())
                 .note(transactionDTO.getNote())
                 .amount(transactionDTO.getAmount())
                 .type(transactionDTO.getType())
