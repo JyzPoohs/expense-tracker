@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class TransactionDTO {
-    private String description;
+    private String note;
     private BigDecimal amount;
     private String type;
     private String category;
     private LocalDateTime date;
+    private String remarks;
 }

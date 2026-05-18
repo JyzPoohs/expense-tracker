@@ -8,21 +8,23 @@ import org.springframework.stereotype.Component;
 public class TransactionMapper {
     public TransactionDTO toDTO(Transaction transaction) {
         return TransactionDTO.builder()
-                .description(transaction.getDescription())
+                .note(transaction.getNote())
                 .amount(transaction.getAmount())
                 .type(transaction.getType())
                 .category(transaction.getCategory())
                 .date(transaction.getDate())
+                .remarks(transaction.getRemarks())
                 .build();
     }
 
     public Transaction toEntity(TransactionDTO transactionDTO) {
         return Transaction.builder()
-                .description(transactionDTO.getDescription())
+                .note(transactionDTO.getNote())
                 .amount(transactionDTO.getAmount())
                 .type(transactionDTO.getType())
                 .category(transactionDTO.getCategory())
                 .date(transactionDTO.getDate())
+                .remarks(transactionDTO.getRemarks())
                 .build();
     }
 }

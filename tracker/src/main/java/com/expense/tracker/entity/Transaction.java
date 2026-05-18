@@ -20,14 +20,19 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String description;
+    private Long user_id;
+    @Column(nullable = false)
+    private String note;
     @Column(nullable = false)
     private BigDecimal amount;
     @Column(nullable = false)
-    private String type; // Income or Expense
+    private String type; // Income/Expense/Transfer
+    @Column(nullable = false)
     private String category;
     @Column(nullable = false)
     private LocalDateTime date;
+    @Column(nullable = false)
+    private String remarks;
     @Column(nullable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)

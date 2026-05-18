@@ -9,7 +9,6 @@ import com.expense.tracker.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,9 +24,6 @@ public class TransactionService {
 
     public TransactionDTO create(TransactionDTO transactionDTO) {
         Transaction transaction = mapper.toEntity(transactionDTO);
-        transaction.setCreatedAt(LocalDateTime.now());
-        transaction.setUpdatedAt(LocalDateTime.now());
-
         return mapper.toDTO(transactionRepository.save(transaction));
     }
 
@@ -48,13 +44,13 @@ public class TransactionService {
 
     public TransactionDTO update(Long id, TransactionDTO transactionDTO) {
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND,  "Transaction not found with id: " + 1));
+                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND, "Transaction not found with id: " + 1));
 
-        transaction.setDescription(transactionDTO.getDescription());
+        transaction.setNote(transactionDTO.getNote());
         transaction.setAmount(transactionDTO.getAmount());
         transaction.setType(transactionDTO.getType());
         transaction.setCategory(transactionDTO.getCategory());
-        transaction.setUpdatedAt(LocalDateTime.now());
+        transaction.setRemarks(transactionDTO.getRemarks());
 
         return mapper.toDTO(transactionRepository.save(transaction));
     }
