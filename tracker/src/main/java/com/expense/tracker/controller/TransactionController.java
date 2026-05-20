@@ -3,12 +3,14 @@ package com.expense.tracker.controller;
 import com.expense.tracker.dto.TransactionDTO;
 import com.expense.tracker.service.TransactionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
+@PreAuthorize("hasRole('USER')")
 @CrossOrigin(origins = "http://localhost:5173")
 public class TransactionController {
 
