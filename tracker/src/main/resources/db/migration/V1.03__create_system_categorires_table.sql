@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS system_categories
+(
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name       VARCHAR(100) NOT NULL,
+    type       VARCHAR(20)  NOT NULL,
+    color      VARCHAR(20),
+    icon       VARCHAR(50),
+    is_active  BOOLEAN,
+    created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;

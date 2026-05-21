@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS categories
     type       VARCHAR(20)  NOT NULL,
     color      VARCHAR(20),
     icon       VARCHAR(50),
+    is_active  BOOLEAN,
     created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
