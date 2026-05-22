@@ -2,37 +2,29 @@ package com.expense.tracker.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@Entity
-@Builder
+@MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "transactions")
-public class Transaction {
+public class BaseCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private Long user_id;
+    private String name;
     @Column(nullable = false)
-    private String note;
+    private String type;
     @Column(nullable = false)
-    private BigDecimal amount;
+    private String color;
     @Column(nullable = false)
-    private String type; // Income/Expense/Transfer
-    @Column(nullable = false)
-    private String category;
-    @Column(nullable = false)
-    private LocalDateTime date;
-    @Column(nullable = false)
-    private String remarks;
+    private String icon;
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
     @Column(nullable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)

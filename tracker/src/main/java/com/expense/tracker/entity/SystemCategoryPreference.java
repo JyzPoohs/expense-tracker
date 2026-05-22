@@ -1,12 +1,12 @@
 package com.expense.tracker.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,25 +14,15 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "transactions")
-public class Transaction {
+@Table(name = "system_categories_preferences")
+public class SystemCategoryPreference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private Long user_id;
-    @Column(nullable = false)
-    private String note;
-    @Column(nullable = false)
-    private BigDecimal amount;
-    @Column(nullable = false)
-    private String type; // Income/Expense/Transfer
-    @Column(nullable = false)
-    private String category;
-    @Column(nullable = false)
-    private LocalDateTime date;
-    @Column(nullable = false)
-    private String remarks;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+    @Column(columnDefinition = "json", nullable = false)
+    private String preferences;
     @Column(nullable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)

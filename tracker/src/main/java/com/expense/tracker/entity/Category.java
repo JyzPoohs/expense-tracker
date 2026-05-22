@@ -1,46 +1,18 @@
 package com.expense.tracker.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "categorires")
-@Data
+@Builder
+@Table(name = "categories")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Category extends BaseCategory {
     @Column(nullable = false)
-    private Long user_id;
-    @Column(nullable = false)
-    private Long name;
-    @Column(nullable = false)
-    private Long type;
-    @Column(nullable = false)
-    private Long color;
-    @Column(nullable = false)
-    private Long icon;
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    private Long userId;
 }
