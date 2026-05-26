@@ -8,29 +8,32 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "app_users")
 @Data
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AppUser {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(name = "auth_user_id", nullable = false, unique = true)
     private String authUserId;
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
     private String username;
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
     @Column(nullable = false)
-    private String full_name;
-    @Column
-    private String currency = "MYR";
-    @Column
-    private String theme = "light";
+    private String role;
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean active = true;
     @Column(nullable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)
