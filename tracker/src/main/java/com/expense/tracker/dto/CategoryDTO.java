@@ -13,4 +13,5 @@ public class CategoryDTO {
     private String color;
     private String icon;
     private boolean isActive;
+    private boolean isSystem;
 }

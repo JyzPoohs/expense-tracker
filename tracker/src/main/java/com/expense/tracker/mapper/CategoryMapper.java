@@ -15,6 +15,7 @@ public class CategoryMapper {
                 .color(category.getColor())
                 .icon(category.getIcon())
                 .isActive(category.isActive())
+                .isSystem(category.isSystem())
                 .build();
     }
 
