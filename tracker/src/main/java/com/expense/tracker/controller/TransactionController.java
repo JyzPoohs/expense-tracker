@@ -4,6 +4,8 @@ import com.expense.tracker.dto.TransactionDTO;
 import com.expense.tracker.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,9 +32,9 @@ public class TransactionController {
         return transactionService.getById(id);
     }
 
-    @GetMapping("/all/{user_id}")
-    public ResponseEntity<List<TransactionDTO>> getAll(@PathVariable Long user_id) {
-        return ResponseEntity.ok(transactionService.getAll(user_id));
+    @GetMapping
+    public ResponseEntity<List<TransactionDTO>> getAll(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(transactionService.getAll(jwt));
     }
 
     @PutMapping("/{id}")

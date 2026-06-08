@@ -7,6 +7,7 @@ import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.mapper.TransactionMapper;
 import com.expense.tracker.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +17,12 @@ import java.util.List;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper mapper;
+    private final AuthService authService;
 
-    public TransactionService(TransactionRepository transactionRepository, TransactionMapper mapper) {
+    public TransactionService(TransactionRepository transactionRepository, TransactionMapper mapper, AuthService authService) {
         this.transactionRepository = transactionRepository;
         this.mapper = mapper;
+        this.authService = authService;
     }
 
     public TransactionDTO create(TransactionDTO transactionDTO) {
@@ -34,11 +37,12 @@ public class TransactionService {
         return mapper.toDTO(transaction);
     }
 
-    public List<TransactionDTO> getAll(Long user_id) {
+    public List<TransactionDTO> getAll(Jwt jwt) {
+        Long userId = authService.getCurrentUser(jwt).getId();
+
         return transactionRepository
-                .findAll()
+                .findByUserId(userId)
                 .stream()
-                .filter(transaction -> transaction.getUser_id().equals(user_id))
                 .map(mapper::toDTO)
                 .toList();
     }

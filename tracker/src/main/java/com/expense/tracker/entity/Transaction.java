@@ -19,8 +19,8 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private Long user_id;
+    @Column(nullable = false, name = "user_id")
+    private Long userId;
     @Column(nullable = false)
     private String note;
     @Column(nullable = false)
