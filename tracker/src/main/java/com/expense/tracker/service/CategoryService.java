@@ -12,6 +12,7 @@ import com.expense.tracker.repository.SystemCategoryRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,13 +28,15 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final SystemCategoryRepository systemCategoryRepository;
     private final SystemCategoryPreferenceRepository systemCategoryPreferenceRepository;
+    private final AuthService authService;
 
-    public CategoryService(ObjectMapper objectMapper, CategoryMapper categoryMapper, CategoryRepository categoryRepository, SystemCategoryRepository systemCategoryRepository, SystemCategoryPreferenceRepository systemCategoryPreferenceRepository) {
+    public CategoryService(ObjectMapper objectMapper, CategoryMapper categoryMapper, CategoryRepository categoryRepository, SystemCategoryRepository systemCategoryRepository, SystemCategoryPreferenceRepository systemCategoryPreferenceRepository, AuthService authService) {
         this.objectMapper = objectMapper;
         this.categoryMapper = categoryMapper;
         this.categoryRepository = categoryRepository;
         this.systemCategoryRepository = systemCategoryRepository;
         this.systemCategoryPreferenceRepository = systemCategoryPreferenceRepository;
+        this.authService = authService;
     }
 
     public List<SystemCategory> getAllSystemCategories() {
@@ -48,9 +51,9 @@ public class CategoryService {
         return categoryRepository.findAllByUserId(userId);
     }
 
-    public List<CategoryDTO> getAll(Long userId) {
-
+    public List<CategoryDTO> getAll(Jwt jwt) {
         try {
+            Long userId = authService.getCurrentUser(jwt).getId();
 
             SystemCategoryPreference preferences = getSystemCategoryPreferences(userId);
 

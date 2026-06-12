@@ -4,6 +4,8 @@ import com.expense.tracker.dto.CategoryDTO;
 import com.expense.tracker.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +23,8 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<CategoryDTO>> getAll(@PathVariable Long userId) {
-        return ResponseEntity.ok(categoryService.getAll(userId));
+    @GetMapping()
+    public ResponseEntity<List<CategoryDTO>> getAll(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(categoryService.getAll(jwt));
     }
 }
