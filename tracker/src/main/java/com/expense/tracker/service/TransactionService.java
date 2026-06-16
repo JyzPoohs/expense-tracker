@@ -25,7 +25,8 @@ public class TransactionService {
         this.authService = authService;
     }
 
-    public TransactionDTO create(TransactionDTO transactionDTO) {
+    public TransactionDTO create(Jwt jwt, TransactionDTO transactionDTO) {
+        transactionDTO.setUser_id(authService.getCurrentUser(jwt).getId());
         Transaction transaction = mapper.toEntity(transactionDTO);
         return mapper.toDTO(transactionRepository.save(transaction));
     }

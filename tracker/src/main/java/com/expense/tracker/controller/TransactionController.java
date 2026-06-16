@@ -23,8 +23,8 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<TransactionDTO> create(@RequestBody TransactionDTO transactionDTO) {
-        return ResponseEntity.ok(transactionService.create(transactionDTO));
+    public ResponseEntity<TransactionDTO> create(@AuthenticationPrincipal Jwt jwt, @RequestBody TransactionDTO transactionDTO) {
+        return ResponseEntity.ok(transactionService.create(jwt, transactionDTO));
     }
 
     @GetMapping("/{id}")
