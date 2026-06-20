@@ -39,7 +39,7 @@ public class TransactionService {
     }
 
     public List<TransactionDTO> getAll(Jwt jwt) {
-        Long userId = authService.getCurrentUser(jwt).getId();
+        Long userId = authService.getCurrentUserId(jwt);
 
         return transactionRepository
                 .findByUserId(userId)

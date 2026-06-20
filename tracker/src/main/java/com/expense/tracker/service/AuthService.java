@@ -25,4 +25,8 @@ public class AuthService {
         return userRepository.findByAuthUserId(jwt.getSubject()).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "User not found"));
     }
+
+    public Long getCurrentUserId(Jwt jwt) {
+        return this.getCurrentUser(jwt).getId();
+    }
 }
