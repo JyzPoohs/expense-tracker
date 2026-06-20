@@ -35,7 +35,7 @@ public class SummaryService {
                 .filter((transactionDTO -> transactionDTO.getDate().getMonth().equals(currentMonth))).toList();
 
 
-        Long numTransactions = (long) transactionDTOS.size();
+        Long numTransactions = (long) currentTransactions.size();
 
         BigDecimal currentTotalIncome = (BigDecimal) currentTransactions.stream()
                 .filter((transaction) -> transaction.getType().equalsIgnoreCase(TransactionType.INCOME))
