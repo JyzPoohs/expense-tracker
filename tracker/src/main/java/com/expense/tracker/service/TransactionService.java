@@ -10,6 +10,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -38,11 +41,21 @@ public class TransactionService {
         return mapper.toDTO(transaction);
     }
 
-    public List<TransactionDTO> getAll(Jwt jwt) {
+    public List<TransactionDTO> getAll(Jwt jwt, String type, String category, Integer month, Integer year) {
         Long userId = authService.getCurrentUserId(jwt);
 
-        return transactionRepository
-                .findByUserId(userId)
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
+
+        if (month != null && year != null) {
+            LocalDate firstDay = LocalDate.of(year, month, 1);
+            LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+
+            startDate = firstDay.atStartOfDay();
+            endDate = lastDay.atTime(LocalTime.MAX);
+        }
+
+        return transactionRepository.findByFilterOptions(userId, type, category, startDate, endDate)
                 .stream()
                 .map(mapper::toDTO)
                 .toList();

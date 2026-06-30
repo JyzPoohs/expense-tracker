@@ -25,8 +25,8 @@ public class SummaryService {
         this.authService = authService;
     }
 
-    public DashboardSummaryDTO getDashboardSummary(Jwt jwt) {
-        List<TransactionDTO> transactionDTOS = transactionService.getAll(jwt);
+    public DashboardSummaryDTO getDashboardSummary(Jwt jwt, String type, String category, Integer month, Integer year) {
+        List<TransactionDTO> transactionDTOS = transactionService.getAll(jwt, type, category, month, year);
 
         // Calculate dashboard summary for current month
         Month currentMonth = LocalDateTime.now().getMonth();

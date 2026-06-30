@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,7 +20,11 @@ public class SummaryController {
     }
 
     @GetMapping("/dashboard")
-    public ResponseEntity<DashboardSummaryDTO> getDashboardSummary(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(summaryService.getDashboardSummary(jwt));
+    public ResponseEntity<DashboardSummaryDTO> getDashboardSummary(@AuthenticationPrincipal Jwt jwt,
+                                                                   @RequestParam(required = false) String type,
+                                                                   @RequestParam(required = false) String category,
+                                                                   @RequestParam(required = false) Integer month,
+                                                                   @RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(summaryService.getDashboardSummary(jwt, type, category, month, year));
     }
 }

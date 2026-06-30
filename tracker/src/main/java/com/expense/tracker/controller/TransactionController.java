@@ -33,8 +33,12 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TransactionDTO>> getAll(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(transactionService.getAll(jwt));
+    public ResponseEntity<List<TransactionDTO>> getAll(@AuthenticationPrincipal Jwt jwt,
+                                                       @RequestParam(required = false) String type,
+                                                       @RequestParam(required = false) String category,
+                                                       @RequestParam(required = false) Integer month,
+                                                       @RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(transactionService.getAll(jwt, type, category, month, year));
     }
 
     @PutMapping("/{id}")
