@@ -63,7 +63,7 @@ public class TransactionService {
             category = null;
         }
 
-        return transactionRepository.findByFilterOptions(userId, type.toUpperCase(), category, startDate, endDate)
+        return transactionRepository.findByFilterOptions(userId, type, category, startDate, endDate)
                 .stream()
                 .map(mapper::toDTO)
                 .toList();
