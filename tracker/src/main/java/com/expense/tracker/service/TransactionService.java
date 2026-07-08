@@ -55,7 +55,15 @@ public class TransactionService {
             endDate = lastDay.atTime(LocalTime.MAX);
         }
 
-        return transactionRepository.findByFilterOptions(userId, type, category, startDate, endDate)
+        if (type != null && type.isBlank()) {
+            type = null;
+        }
+
+        if (category != null && category.isBlank()) {
+            category = null;
+        }
+
+        return transactionRepository.findByFilterOptions(userId, type.toUpperCase(), category, startDate, endDate)
                 .stream()
                 .map(mapper::toDTO)
                 .toList();
