@@ -78,6 +78,7 @@ public class TransactionService {
         transaction.setType(transactionDTO.getType());
         transaction.setCategory(transactionDTO.getCategory());
         transaction.setRemarks(transactionDTO.getRemarks());
+        transaction.setDate(transactionDTO.getDate());
 
         return mapper.toDTO(transactionRepository.save(transaction));
     }
