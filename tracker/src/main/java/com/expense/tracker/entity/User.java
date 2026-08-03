@@ -31,6 +31,8 @@ public class User {
     private String lastName;
     @Column(nullable = false)
     private String role;
+    @Column (name = "phone")
+    private String phone;
     @Column(nullable = false)
     @Builder.Default
     private Boolean active = true;
