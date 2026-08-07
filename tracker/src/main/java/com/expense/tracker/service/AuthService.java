@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class AuthService {
     private final UserRepository userRepository;
+    private final SystemCategoryPreferenceService systemCategoryPreferenceService;
 
-    public AuthService(UserRepository userRepository) {
+
+    public AuthService(UserRepository userRepository, SystemCategoryPreferenceService systemCategoryPreference) {
         this.userRepository = userRepository;
+        this.systemCategoryPreferenceService = systemCategoryPreference;
     }
 
     public String getKeycloakUserId(Jwt jwt) {
@@ -35,16 +38,19 @@ public class AuthService {
 
     private User createUser(Jwt jwt) {
         User user = User.builder()
-                .authUserId(jwt.getId())
+                .authUserId(jwt.getSubject())
                 .email(jwt.getClaimAsString("email"))
                 .username(jwt.getClaimAsString("name"))
                 .firstName(jwt.getClaimAsString("given_name"))
                 .lastName(jwt.getClaimAsString("family_name"))
                 .role(Role.ROLE_USER)
-                .phone(jwt.getClaimAsString("phone"))
+                .phone("")
                 .active(true)
                 .build();
 
-        return userRepository.save(user);
+        userRepository.save(user);
+        systemCategoryPreferenceService.createSystemCategoryPreference(user.getId());
+
+        return user;
     }
 }

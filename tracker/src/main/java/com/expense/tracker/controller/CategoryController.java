@@ -27,4 +27,6 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDTO>> getAll(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(categoryService.getAll(jwt));
     }
+
+
 }
