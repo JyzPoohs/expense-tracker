@@ -20,16 +20,16 @@ import java.util.List;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper mapper;
-    private final AuthService authService;
+    private final CurrentUserService currentUserService;
 
-    public TransactionService(TransactionRepository transactionRepository, TransactionMapper mapper, AuthService authService) {
+    public TransactionService(TransactionRepository transactionRepository, TransactionMapper mapper, CurrentUserService currentUserService) {
         this.transactionRepository = transactionRepository;
         this.mapper = mapper;
-        this.authService = authService;
+        this.currentUserService = currentUserService;
     }
 
     public TransactionDTO create(Jwt jwt, TransactionDTO transactionDTO) {
-        transactionDTO.setUser_id(authService.getCurrentUser(jwt).getId());
+        transactionDTO.setUser_id(currentUserService.getCurrentUser(jwt).getId());
         Transaction transaction = mapper.toEntity(transactionDTO);
         return mapper.toDTO(transactionRepository.save(transaction));
     }
@@ -42,7 +42,7 @@ public class TransactionService {
     }
 
     public List<TransactionDTO> getAll(Jwt jwt, String type, String category, Integer month, Integer year) {
-        Long userId = authService.getCurrentUserId(jwt);
+        Long userId = currentUserService.getCurrentUserId(jwt);
 
         LocalDateTime startDate = null;
         LocalDateTime endDate = null;

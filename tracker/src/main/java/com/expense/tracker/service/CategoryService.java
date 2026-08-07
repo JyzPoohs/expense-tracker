@@ -28,15 +28,15 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final SystemCategoryRepository systemCategoryRepository;
     private final SystemCategoryPreferenceRepository systemCategoryPreferenceRepository;
-    private final AuthService authService;
+    private final CurrentUserService currentUserService;
 
-    public CategoryService(ObjectMapper objectMapper, CategoryMapper categoryMapper, CategoryRepository categoryRepository, SystemCategoryRepository systemCategoryRepository, SystemCategoryPreferenceRepository systemCategoryPreferenceRepository, AuthService authService) {
+    public CategoryService(ObjectMapper objectMapper, CategoryMapper categoryMapper, CategoryRepository categoryRepository, SystemCategoryRepository systemCategoryRepository, SystemCategoryPreferenceRepository systemCategoryPreferenceRepository, CurrentUserService currentUserService) {
         this.objectMapper = objectMapper;
         this.categoryMapper = categoryMapper;
         this.categoryRepository = categoryRepository;
         this.systemCategoryRepository = systemCategoryRepository;
         this.systemCategoryPreferenceRepository = systemCategoryPreferenceRepository;
-        this.authService = authService;
+        this.currentUserService = currentUserService;
     }
 
     public List<SystemCategory> getAllSystemCategories() {
@@ -53,7 +53,7 @@ public class CategoryService {
 
     public List<CategoryDTO> getAll(Jwt jwt) {
         try {
-            Long userId = authService.getCurrentUser(jwt).getId();
+            Long userId = currentUserService.getCurrentUser(jwt).getId();
 
             SystemCategoryPreference preferences = getSystemCategoryPreferences(userId);
 

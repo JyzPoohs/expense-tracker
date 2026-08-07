@@ -11,18 +11,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Date;
 import java.util.List;
 
 @Service
 @Transactional
 public class SummaryService {
     private final TransactionService transactionService;
-    private final AuthService authService;
+    private final CurrentUserService currentUserService;
 
-    public SummaryService(TransactionService transactionService, AuthService authService) {
+    public SummaryService(TransactionService transactionService, CurrentUserService currentUserService) {
         this.transactionService = transactionService;
-        this.authService = authService;
+        this.currentUserService = currentUserService;
     }
 
     public DashboardSummaryDTO getDashboardSummary(Jwt jwt, String type, String category, Integer month, Integer year) {

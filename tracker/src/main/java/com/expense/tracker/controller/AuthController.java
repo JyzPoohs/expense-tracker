@@ -1,6 +1,6 @@
 package com.expense.tracker.controller;
 
-import com.expense.tracker.service.AuthService;
+import com.expense.tracker.service.CurrentUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,15 +14,15 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    private final AuthService authService;
+    private final CurrentUserService currentUserService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    public AuthController(CurrentUserService currentUserService) {
+        this.currentUserService = currentUserService;
     }
 
     @GetMapping("/me")
     public String me(@AuthenticationPrincipal Jwt jwt) {
-        return authService.getKeycloakUserId(jwt);
+        return currentUserService.getKeycloakUserId(jwt);
     }
 
     @GetMapping("/permissions")
