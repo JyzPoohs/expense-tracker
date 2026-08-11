@@ -1,6 +1,8 @@
 package com.expense.tracker.controller;
 
+import com.expense.tracker.entity.User;
 import com.expense.tracker.service.CurrentUserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,8 +23,9 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public String me(@AuthenticationPrincipal Jwt jwt) {
-        return currentUserService.getKeycloakUserId(jwt);
+    public ResponseEntity<User> me(@AuthenticationPrincipal Jwt jwt) {
+        User user = currentUserService.getCurrentUser(jwt);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/permissions")

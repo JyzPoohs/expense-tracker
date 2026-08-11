@@ -17,11 +17,9 @@ import java.util.List;
 @Transactional
 public class SummaryService {
     private final TransactionService transactionService;
-    private final CurrentUserService currentUserService;
 
-    public SummaryService(TransactionService transactionService, CurrentUserService currentUserService) {
+    public SummaryService(TransactionService transactionService) {
         this.transactionService = transactionService;
-        this.currentUserService = currentUserService;
     }
 
     public DashboardSummaryDTO getDashboardSummary(Jwt jwt, String type, String category, Integer month, Integer year) {
