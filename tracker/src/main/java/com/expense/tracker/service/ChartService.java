@@ -1,8 +1,8 @@
 package com.expense.tracker.service;
 
+import com.expense.tracker.constant.TransactionType;
 import com.expense.tracker.dto.DashboardBarChartDTO;
 import com.expense.tracker.dto.TransactionDTO;
-import com.expense.tracker.mapper.TransactionMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -19,27 +19,39 @@ import java.util.Locale;
 @Transactional
 public class ChartService {
     private final TransactionService transactionService;
-    private final TransactionMapper mapper;
 
-    public ChartService(TransactionService transactionService, TransactionMapper mapper) {
+    public ChartService(TransactionService transactionService) {
         this.transactionService = transactionService;
-        this.mapper = mapper;
     }
 
     public List<DashboardBarChartDTO> getDashboardBarChartData(Jwt jwt) {
-        LocalDate startDate = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), LocalDate.now().lengthOfMonth());
-        LocalDate endDate = LocalDate.of(LocalDateTime.now().getYear(), LocalDateTime.now().minusMonths(5).getMonthValue(),1);
+        LocalDateTime startDate = LocalDateTime.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), LocalDate.now().lengthOfMonth(), 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().minusMonths(5).getMonthValue(),1, 0, 0);
         List<TransactionDTO> transactions = transactionService.getByDateBetween(jwt, startDate, endDate);
 
         List<DashboardBarChartDTO> dashboardBarChartData = new ArrayList<>();
 
-        for(int i = 5; i > 0; i--) {
+        for(int i = 5; i >= 0; i--) {
             String month = LocalDate.now().minusMonths(i).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+            List<TransactionDTO> groupedTransactionsByMonth = transactions.stream()
+                    .filter((transaction)-> month.equalsIgnoreCase(String.valueOf(transaction.getDate().getMonth())))
+                    .toList();
+
+            BigDecimal totalExpense = groupedTransactionsByMonth.stream()
+                    .filter((transaction)-> TransactionType.EXPENSE.equalsIgnoreCase(transaction.getType()))
+                    .map(TransactionDTO::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal totalIncome = groupedTransactionsByMonth.stream()
+                    .filter((transaction)-> TransactionType.INCOME.equalsIgnoreCase(transaction.getType()))
+                    .map(TransactionDTO::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             DashboardBarChartDTO barChartData = DashboardBarChartDTO.builder()
                     .month(month)
-                    .expense(BigDecimal.valueOf(1))
-                    .income(BigDecimal.valueOf(1))
+                    .expense(totalExpense)
+                    .income(totalIncome)
                     .build();
 
             dashboardBarChartData.add(barChartData);

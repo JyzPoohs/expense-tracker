@@ -34,13 +34,13 @@ public class SummaryService {
 
         Long numTransactions = (long) currentTransactions.size();
 
-        BigDecimal currentTotalIncome = (BigDecimal) currentTransactions.stream()
-                .filter((transaction) -> transaction.getType().equalsIgnoreCase(TransactionType.INCOME))
+        BigDecimal currentTotalIncome = currentTransactions.stream()
+                .filter((transaction) -> TransactionType.INCOME.equalsIgnoreCase(transaction.getType()))
                 .map(TransactionDTO::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal currentTotalExpense = (BigDecimal) currentTransactions.stream()
-                .filter((transaction) -> transaction.getType().equalsIgnoreCase(TransactionType.EXPENSE))
+        BigDecimal currentTotalExpense = currentTransactions.stream()
+                .filter((transaction) -> TransactionType.EXPENSE.equalsIgnoreCase(transaction.getType()))
                 .map(TransactionDTO::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -53,13 +53,13 @@ public class SummaryService {
                 .filter((transactionDTO -> transactionDTO.getDate().getMonth().equals(previousMonth))).toList();
 
 
-        BigDecimal previousTotalIncome = (BigDecimal) previousTransactions.stream()
-                .filter((transaction) -> transaction.getType().equalsIgnoreCase(TransactionType.INCOME))
+        BigDecimal previousTotalIncome = previousTransactions.stream()
+                .filter((transaction) -> TransactionType.INCOME.equalsIgnoreCase(transaction.getType()))
                 .map(TransactionDTO::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal previousTotalExpense = (BigDecimal) previousTransactions.stream()
-                .filter((transaction) -> transaction.getType().equalsIgnoreCase(TransactionType.EXPENSE))
+        BigDecimal previousTotalExpense = previousTransactions.stream()
+                .filter((transaction) -> TransactionType.EXPENSE.equalsIgnoreCase(transaction.getType()))
                 .map(TransactionDTO::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 

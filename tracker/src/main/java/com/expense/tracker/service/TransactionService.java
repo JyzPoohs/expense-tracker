@@ -100,7 +100,7 @@ public class TransactionService {
                 .filter(transaction -> transaction.getCategory().equals(category)).map(mapper::toDTO).toList();
     }
 
-    public List<TransactionDTO> getByDateBetween(Jwt jwt, LocalDate startDate, LocalDate endDate) {
+    public List<TransactionDTO> getByDateBetween(Jwt jwt, LocalDateTime startDate, LocalDateTime endDate) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
         return transactionRepository.findByUserIdAndDateBetween(userId, startDate, endDate).stream().map(mapper::toDTO).toList();
