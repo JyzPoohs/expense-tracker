@@ -2,6 +2,7 @@ package com.expense.tracker.service;
 
 import com.expense.tracker.constant.TransactionType;
 import com.expense.tracker.dto.DashboardBarChartDTO;
+import com.expense.tracker.dto.DashboardPieChartDTO;
 import com.expense.tracker.dto.TransactionDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -15,6 +16,8 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -76,5 +79,24 @@ public class ChartService {
         }
 
         return dashboardBarChartData;
+    }
+
+    public List<DashboardPieChartDTO> getDashboardPieChartData(Jwt jwt) {
+        LocalDate today = LocalDate.now();
+        List<TransactionDTO> transactions = transactionService.getAll(jwt, null, null, today.getMonthValue(), today.getYear());
+
+        List<DashboardPieChartDTO> dashboardPieChartData = null;
+
+        Map<String, BigDecimal> groupedTransactionsByCategory = transactions.stream().collect(
+                Collectors.groupingBy(TransactionDTO::getCategory,
+                Collectors.reducing(BigDecimal.ZERO, TransactionDTO::getAmount, BigDecimal::add)));
+
+        for(Map.Entry<String, BigDecimal> groupedTransaction: groupedTransactionsByCategory.entrySet()) {
+            dashboardPieChartData.add(DashboardPieChartDTO.builder()
+                            .expense(groupedTransaction.getKey())
+                            .total(groupedTransaction.getValue()).build());
+        }
+
+        return dashboardPieChartData;
     }
 }

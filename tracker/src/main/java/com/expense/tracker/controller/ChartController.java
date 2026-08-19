@@ -1,6 +1,7 @@
 package com.expense.tracker.controller;
 
 import com.expense.tracker.dto.DashboardBarChartDTO;
+import com.expense.tracker.dto.DashboardPieChartDTO;
 import com.expense.tracker.service.ChartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,5 +24,10 @@ public class ChartController {
     @GetMapping("/dashboard/barchart")
     public ResponseEntity<List<DashboardBarChartDTO>> getDashboardBarChartData(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(chartService.getDashboardBarChartData(jwt));
+    }
+
+    @GetMapping("/dashboard/piechart")
+    public ResponseEntity<List<DashboardPieChartDTO>> getDashboardPieChartData(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(chartService.getDashboardPieChartData(jwt));
     }
 }
