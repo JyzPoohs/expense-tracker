@@ -43,10 +43,6 @@ public class ChartService {
 
         List<TransactionDTO> transactions = transactionService.getByDateBetween(jwt, startDate, endDate);
 
-        for(TransactionDTO t: transactions) {
-            System.out.println("log: " + t.toString());
-        }
-
         List<DashboardBarChartDTO> dashboardBarChartData = new ArrayList<>();
 
         for(int i = 5; i >= 0; i--) {
@@ -80,11 +76,12 @@ public class ChartService {
         LocalDate today = LocalDate.now();
         List<TransactionDTO> transactions = transactionService.getAll(jwt, null, null, today.getMonthValue(), today.getYear());
 
-        List<DashboardPieChartDTO> dashboardPieChartData = null;
+        List<DashboardPieChartDTO> dashboardPieChartData = new ArrayList<>();
 
-        Map<String, BigDecimal> groupedTransactionsByCategory = transactions.stream().collect(
-                Collectors.groupingBy(TransactionDTO::getCategory,
-                Collectors.reducing(BigDecimal.ZERO, TransactionDTO::getAmount, BigDecimal::add)));
+        Map<String, BigDecimal> groupedTransactionsByCategory = transactions.stream()
+                .filter(transaction -> TransactionType.EXPENSE.equalsIgnoreCase(transaction.getType()))
+                .collect(Collectors.groupingBy(TransactionDTO::getCategory,
+                        Collectors.reducing(BigDecimal.ZERO, TransactionDTO::getAmount, BigDecimal::add)));
 
         for(Map.Entry<String, BigDecimal> groupedTransaction: groupedTransactionsByCategory.entrySet()) {
             DashboardPieChartDTO dashboardPieChartDTO = DashboardPieChartDTO.builder()
