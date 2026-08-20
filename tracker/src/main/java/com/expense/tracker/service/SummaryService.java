@@ -3,6 +3,7 @@ package com.expense.tracker.service;
 import com.expense.tracker.constant.TransactionType;
 import com.expense.tracker.dto.DashboardSummaryDTO;
 import com.expense.tracker.dto.TransactionDTO;
+import com.expense.tracker.utils.TransactionUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -34,15 +35,9 @@ public class SummaryService {
 
         Long numTransactions = (long) currentTransactions.size();
 
-        BigDecimal currentTotalIncome = currentTransactions.stream()
-                .filter((transaction) -> TransactionType.INCOME.equalsIgnoreCase(transaction.getType()))
-                .map(TransactionDTO::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal currentTotalIncome = TransactionUtils.calculateTotal(currentTransactions, TransactionType.INCOME);
 
-        BigDecimal currentTotalExpense = currentTransactions.stream()
-                .filter((transaction) -> TransactionType.EXPENSE.equalsIgnoreCase(transaction.getType()))
-                .map(TransactionDTO::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal currentTotalExpense = TransactionUtils.calculateTotal(currentTransactions, TransactionType.EXPENSE);
 
         BigDecimal currentTotalBalance = currentTotalIncome.subtract(currentTotalExpense);
 
@@ -53,15 +48,9 @@ public class SummaryService {
                 .filter((transactionDTO -> transactionDTO.getDate().getMonth().equals(previousMonth))).toList();
 
 
-        BigDecimal previousTotalIncome = previousTransactions.stream()
-                .filter((transaction) -> TransactionType.INCOME.equalsIgnoreCase(transaction.getType()))
-                .map(TransactionDTO::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal previousTotalIncome = TransactionUtils.calculateTotal(previousTransactions, TransactionType.INCOME);
 
-        BigDecimal previousTotalExpense = previousTransactions.stream()
-                .filter((transaction) -> TransactionType.EXPENSE.equalsIgnoreCase(transaction.getType()))
-                .map(TransactionDTO::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal previousTotalExpense = TransactionUtils.calculateTotal(previousTransactions, TransactionType.EXPENSE);
 
         BigDecimal previousTotalBalance = previousTotalIncome.subtract(previousTotalExpense);
 

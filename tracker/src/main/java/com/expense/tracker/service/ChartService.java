@@ -4,6 +4,7 @@ import com.expense.tracker.constant.TransactionType;
 import com.expense.tracker.dto.DashboardBarChartDTO;
 import com.expense.tracker.dto.DashboardPieChartDTO;
 import com.expense.tracker.dto.TransactionDTO;
+import com.expense.tracker.utils.TransactionUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -59,15 +60,9 @@ public class ChartService {
                 System.out.println(t);
             }
 
-            BigDecimal totalExpense = groupedTransactionsByMonth.stream()
-                    .filter((transaction)-> TransactionType.EXPENSE.equalsIgnoreCase(transaction.getType()))
-                    .map(TransactionDTO::getAmount)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal totalExpense = TransactionUtils.calculateTotal(groupedTransactionsByMonth, TransactionType.EXPENSE);
 
-            BigDecimal totalIncome = groupedTransactionsByMonth.stream()
-                    .filter((transaction)-> TransactionType.INCOME.equalsIgnoreCase(transaction.getType()))
-                    .map(TransactionDTO::getAmount)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal totalIncome = TransactionUtils.calculateTotal(groupedTransactionsByMonth, TransactionType.INCOME);
 
             DashboardBarChartDTO barChartData = DashboardBarChartDTO.builder()
                     .month(month)
@@ -92,9 +87,11 @@ public class ChartService {
                 Collectors.reducing(BigDecimal.ZERO, TransactionDTO::getAmount, BigDecimal::add)));
 
         for(Map.Entry<String, BigDecimal> groupedTransaction: groupedTransactionsByCategory.entrySet()) {
-            dashboardPieChartData.add(DashboardPieChartDTO.builder()
-                            .expense(groupedTransaction.getKey())
-                            .total(groupedTransaction.getValue()).build());
+            DashboardPieChartDTO dashboardPieChartDTO = DashboardPieChartDTO.builder()
+                    .expense(groupedTransaction.getKey())
+                    .total(groupedTransaction.getValue()).build();
+
+            dashboardPieChartData.add(dashboardPieChartDTO);
         }
 
         return dashboardPieChartData;
