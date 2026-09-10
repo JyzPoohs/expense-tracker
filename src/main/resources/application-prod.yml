@@ -17,4 +17,5 @@ spring:
 
 logging:
   level:
-    org.hibernate.SQL: debug
+    root: INFO
+    com.expense.tracker: INFO
