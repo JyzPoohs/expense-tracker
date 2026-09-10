@@ -71,7 +71,7 @@ public class TransactionService {
 
     public TransactionDTO update(Long id, TransactionDTO transactionDTO) {
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND, "Transaction not found with id: " + 1));
+                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND, "Transaction not found with id: " + id));
 
         transaction.setNote(transactionDTO.getNote());
         transaction.setAmount(transactionDTO.getAmount());
@@ -88,16 +88,6 @@ public class TransactionService {
                 new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND, "Transaction not found with id: " + id));
 
         transactionRepository.delete(transaction);
-    }
-
-    public List<TransactionDTO> getByType(String type) {
-        return transactionRepository.findAll().stream()
-                .filter(transaction -> transaction.getType().equals(type)).map(mapper::toDTO).toList();
-    }
-
-    public List<TransactionDTO> getByCategory(String category) {
-        return transactionRepository.findAll().stream()
-                .filter(transaction -> transaction.getCategory().equals(category)).map(mapper::toDTO).toList();
     }
 
     public List<TransactionDTO> getByDateBetween(Jwt jwt, LocalDateTime startDate, LocalDateTime endDate) {
