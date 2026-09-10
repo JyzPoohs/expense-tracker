@@ -52,10 +52,6 @@ public class ChartService {
                     .filter((transaction)-> month.equalsIgnoreCase(String.valueOf(transaction.getDate().getMonth())))
                     .toList();
 
-            for(TransactionDTO t: groupedTransactionsByMonth) {
-                System.out.println(t);
-            }
-
             BigDecimal totalExpense = TransactionUtils.calculateTotal(groupedTransactionsByMonth, TransactionType.EXPENSE);
 
             BigDecimal totalIncome = TransactionUtils.calculateTotal(groupedTransactionsByMonth, TransactionType.INCOME);
