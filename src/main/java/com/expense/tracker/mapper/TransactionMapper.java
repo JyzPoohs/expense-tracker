@@ -9,7 +9,7 @@ public class TransactionMapper {
     public TransactionDTO toDTO(Transaction transaction) {
         return TransactionDTO.builder()
                 .id(transaction.getId())
-                .user_id(transaction.getUserId())
+                .userId(transaction.getUserId())
                 .note(transaction.getNote())
                 .amount(transaction.getAmount())
                 .type(transaction.getType())
@@ -21,7 +21,7 @@ public class TransactionMapper {
 
     public Transaction toEntity(TransactionDTO transactionDTO) {
         return Transaction.builder()
-                .userId(transactionDTO.getUser_id())
+                .userId(transactionDTO.getUserId())
                 .note(transactionDTO.getNote())
                 .amount(transactionDTO.getAmount())
                 .type(transactionDTO.getType())
