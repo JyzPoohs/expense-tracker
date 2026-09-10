@@ -51,15 +51,4 @@ public class TransactionController {
         transactionService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/type/{type}")
-    public ResponseEntity<List<TransactionDTO>> getByType(@PathVariable String type) {
-        return ResponseEntity.ok(transactionService.getByType(type));
-    }
-
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<TransactionDTO>> getByCategory(@PathVariable String category) {
-        return ResponseEntity.ok(transactionService.getByCategory(category));
-    }
-
 }
