@@ -4,9 +4,9 @@ import com.expense.tracker.constant.TransactionType;
 import com.expense.tracker.dto.DashboardSummaryDTO;
 import com.expense.tracker.dto.TransactionDTO;
 import com.expense.tracker.utils.TransactionUtils;
-import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,7 +15,7 @@ import java.time.Month;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SummaryService {
     private final TransactionService transactionService;
 

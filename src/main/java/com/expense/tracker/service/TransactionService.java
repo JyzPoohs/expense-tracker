@@ -6,9 +6,9 @@ import com.expense.tracker.entity.Transaction;
 import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.mapper.TransactionMapper;
 import com.expense.tracker.repository.TransactionRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper mapper;
@@ -29,7 +29,7 @@ public class TransactionService {
     }
 
     public TransactionDTO create(Jwt jwt, TransactionDTO transactionDTO) {
-        transactionDTO.setUser_id(currentUserService.getCurrentUser(jwt).getId());
+        transactionDTO.setUserId(currentUserService.getCurrentUser(jwt).getId());
         Transaction transaction = mapper.toEntity(transactionDTO);
         return mapper.toDTO(transactionRepository.save(transaction));
     }
