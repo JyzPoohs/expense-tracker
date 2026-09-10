@@ -11,9 +11,9 @@ import com.expense.tracker.repository.SystemCategoryPreferenceRepository;
 import com.expense.tracker.repository.SystemCategoryRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class CategoryService {
     private final ObjectMapper objectMapper;
     private final CategoryMapper categoryMapper;

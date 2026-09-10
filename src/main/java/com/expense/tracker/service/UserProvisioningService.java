@@ -3,12 +3,12 @@ package com.expense.tracker.service;
 import com.expense.tracker.constant.Role;
 import com.expense.tracker.entity.User;
 import com.expense.tracker.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserProvisioningService {
     private final UserRepository userRepository;
     private final SystemCategoryPreferenceService systemCategoryPreferenceService;

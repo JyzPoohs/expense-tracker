@@ -1,16 +1,13 @@
 package com.expense.tracker.service;
 
-import com.expense.tracker.constant.ErrorCode;
 import com.expense.tracker.entity.User;
-import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class CurrentUserService {
     private final UserRepository userRepository;
     private final UserProvisioningService userProvisioningService;

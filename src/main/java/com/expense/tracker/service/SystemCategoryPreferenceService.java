@@ -2,11 +2,11 @@ package com.expense.tracker.service;
 
 import com.expense.tracker.entity.SystemCategoryPreference;
 import com.expense.tracker.repository.SystemCategoryPreferenceRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SystemCategoryPreferenceService {
     private final SystemCategoryPreferenceRepository systemCategoryPreferenceRepository;
 
