@@ -5,6 +5,7 @@ import com.expense.tracker.dto.SystemCategoryPreferenceDetail;
 import com.expense.tracker.entity.Category;
 import com.expense.tracker.entity.SystemCategory;
 import com.expense.tracker.entity.SystemCategoryPreference;
+import com.expense.tracker.exception.PreferenceParseException;
 import com.expense.tracker.mapper.CategoryMapper;
 import com.expense.tracker.repository.CategoryRepository;
 import com.expense.tracker.repository.SystemCategoryPreferenceRepository;
@@ -86,7 +87,7 @@ public class CategoryService {
                     .collect(Collectors.toList());
 
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to parse preferences JSON", e);
+            throw new PreferenceParseException("Failed to parse user category preferences");
         }
     }
 
