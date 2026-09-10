@@ -27,17 +27,7 @@ public class AuthController {
         User user = currentUserService.getCurrentUser(jwt);
         return ResponseEntity.ok(user);
     }
-
-    @GetMapping("/permissions")
-    public Map<String, Object> testPermissions(Authentication authentication) {
-        return Map.of(
-                "principal", authentication.getName(),
-                "authorities", authentication.getAuthorities().toString(),
-                "isAdmin", authentication.getAuthorities().stream()
-                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
-        );
-    }
-
+    
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
     public String testAdmin() {
