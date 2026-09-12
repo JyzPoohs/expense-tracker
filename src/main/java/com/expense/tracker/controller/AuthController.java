@@ -1,10 +1,10 @@
 package com.expense.tracker.controller;
 
-import com.expense.tracker.entity.User;
+import com.expense.tracker.dto.UserDTO;
+import com.expense.tracker.mapper.UserMapper;
 import com.expense.tracker.service.CurrentUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +17,17 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final CurrentUserService currentUserService;
+    private final UserMapper userMapper;
 
-    public AuthController(CurrentUserService currentUserService) {
+    public AuthController(CurrentUserService currentUserService, UserMapper userMapper) {
+
         this.currentUserService = currentUserService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> me(@AuthenticationPrincipal Jwt jwt) {
-        User user = currentUserService.getCurrentUser(jwt);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> me(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(userMapper.toDTO(currentUserService.getCurrentUser(jwt)));
     }
     
     @PreAuthorize("hasRole('ADMIN')")
