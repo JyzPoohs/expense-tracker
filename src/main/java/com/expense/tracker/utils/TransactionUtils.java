@@ -1,6 +1,5 @@
 package com.expense.tracker.utils;
 
-import com.expense.tracker.constant.TransactionType;
 import com.expense.tracker.dto.TransactionDTO;
 
 import java.math.BigDecimal;

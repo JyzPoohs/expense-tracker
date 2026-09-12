@@ -13,15 +13,15 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/expense-realm
+          issuer-uri: ${KEYCLOAK_URL:http://localhost:1880}/realms/${KEYCLOAK_REALM:expense-realm}
 
   keycloak:
-    server-url: http://localhost:8180
-    realm: expense-realm
+    server-url: ${KEYCLOAK_URL:http://localhost:1880}
+    realm: ${KEYCLOAK_REALM:expense-realm}
 
   docker:
     compose:
       enabled: false
 
 server:
-  port: 1331
+  port: ${SERVER_PORT:1331}
