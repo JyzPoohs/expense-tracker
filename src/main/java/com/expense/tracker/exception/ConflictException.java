@@ -3,7 +3,7 @@ package com.expense.tracker.exception;
 import com.expense.tracker.constant.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-public abstract class ConflictException extends ClientException{
+public class ConflictException extends ClientException{
     public ConflictException(ErrorCode errorCode) {
         super(errorCode, HttpStatus.CONFLICT);
     }

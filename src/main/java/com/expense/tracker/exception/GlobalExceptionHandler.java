@@ -1,9 +1,11 @@
 package com.expense.tracker.exception;
 
+import com.expense.tracker.constant.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,11 +31,36 @@ public class GlobalExceptionHandler {
 
         log.warn("Request validation failed: {}", violations);
 
-        return buildResponse(ex.getStatusCode().toString(),
-                ex.getMessage(),
+        return buildResponse(ErrorCode.SYS_BAD_REQUEST.getCode(),
+                ErrorCode.SYS_BAD_REQUEST.getDefaultMessage(),
                 HttpStatus.BAD_REQUEST,
                 req,
                 violations);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorResponse> handleMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest req) {
+        log.warn(
+                "Malformed JSON request: method={}, uri={}, error={}",
+                req.getMethod(),
+                req.getRequestURI(),
+                ex.getMostSpecificCause().getMessage()
+        );
+
+        return buildResponse(ErrorCode.SYS_BAD_REQUEST.getCode(),
+                ErrorCode.SYS_BAD_REQUEST.getDefaultMessage(),
+                HttpStatus.BAD_REQUEST,
+                req, null);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest req) {
+        log.warn("Resource not found error: {}", ex.getMessage());
+
+        return buildResponse(ErrorCode.SYS_NOT_FOUND.getCode(),
+                ErrorCode.SYS_NOT_FOUND.getDefaultMessage(),
+                HttpStatus.NOT_FOUND,
+                req, null);
     }
 
     @ExceptionHandler(AppException.class)
@@ -48,6 +75,16 @@ public class GlobalExceptionHandler {
         }
 
         return buildResponse(ex.getErrorCode(), ex.getMessage(), ex.getHttpStatus(), req, null);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleGeneric(Exception ex, HttpServletRequest req) {
+        log.error("Unhandled exception", ex);
+
+        return buildResponse(ErrorCode.SYS_INTERNAL_ERROR.getCode()
+                , ErrorCode.SYS_INTERNAL_ERROR.getDefaultMessage()
+                , HttpStatus.INTERNAL_SERVER_ERROR
+                , req, null);
     }
 
     private ResponseEntity<ApiErrorResponse> buildResponse(String code,
