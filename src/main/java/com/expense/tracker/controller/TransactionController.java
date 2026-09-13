@@ -2,6 +2,7 @@ package com.expense.tracker.controller;
 
 import com.expense.tracker.dto.TransactionDTO;
 import com.expense.tracker.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +23,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<TransactionDTO> create(@AuthenticationPrincipal Jwt jwt, @RequestBody TransactionDTO transactionDTO) {
+    public ResponseEntity<TransactionDTO> create(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody TransactionDTO transactionDTO) {
         return ResponseEntity.ok(transactionService.create(jwt, transactionDTO));
     }
 
@@ -41,7 +42,7 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionDTO> update(@PathVariable Long id, @RequestBody TransactionDTO transactionDTO) {
+    public ResponseEntity<TransactionDTO> update(@PathVariable Long id, @Valid @RequestBody TransactionDTO transactionDTO) {
         return ResponseEntity.ok(transactionService.update(id, transactionDTO));
     }
 
