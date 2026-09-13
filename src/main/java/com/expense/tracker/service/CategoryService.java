@@ -1,11 +1,12 @@
 package com.expense.tracker.service;
 
+import com.expense.tracker.constant.ErrorCode;
 import com.expense.tracker.dto.CategoryDTO;
 import com.expense.tracker.dto.SystemCategoryPreferenceDetail;
 import com.expense.tracker.entity.Category;
 import com.expense.tracker.entity.SystemCategory;
 import com.expense.tracker.entity.SystemCategoryPreference;
-import com.expense.tracker.exception.PreferenceParseException;
+import com.expense.tracker.exception.SystemException;
 import com.expense.tracker.mapper.CategoryMapper;
 import com.expense.tracker.repository.CategoryRepository;
 import com.expense.tracker.repository.SystemCategoryPreferenceRepository;
@@ -86,8 +87,8 @@ public class CategoryService {
             return Stream.concat(systemCategoryList.stream(), userCategoryList.stream())
                     .collect(Collectors.toList());
 
-        } catch (JsonProcessingException e) {
-            throw new PreferenceParseException("Failed to parse user category preferences");
+        } catch (JsonProcessingException ex) {
+            throw new SystemException(ErrorCode.CAT_PREF_PARSE_ERROR, ex);
         }
     }
 

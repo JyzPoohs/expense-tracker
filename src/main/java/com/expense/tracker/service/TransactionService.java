@@ -36,7 +36,7 @@ public class TransactionService {
 
     public TransactionDTO getById(Long id) {
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND, "Transaction not found with id: " + id));
+                new ResourceNotFoundException(ErrorCode.TRX_NOT_FOUND));
 
         return mapper.toDTO(transaction);
     }
@@ -71,7 +71,7 @@ public class TransactionService {
 
     public TransactionDTO update(Long id, TransactionDTO transactionDTO) {
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND, "Transaction not found with id: " + id));
+                new ResourceNotFoundException(ErrorCode.TRX_NOT_FOUND));
 
         transaction.setNote(transactionDTO.getNote());
         transaction.setAmount(transactionDTO.getAmount());
@@ -85,7 +85,7 @@ public class TransactionService {
 
     public void delete(Long id) {
         Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND, "Transaction not found with id: " + id));
+                new ResourceNotFoundException(ErrorCode.TRX_NOT_FOUND));
 
         transactionRepository.delete(transaction);
     }
