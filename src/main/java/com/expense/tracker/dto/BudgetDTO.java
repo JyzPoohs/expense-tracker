@@ -16,6 +16,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BudgetDTO {
+    @NotNull
+    private Long id;
+    @NotNull
+    private Long userId;
     private Long categoryId;
     @NotNull @Positive(message = "Budget must be greater than zero")
     private BigDecimal budget;
