@@ -22,8 +22,8 @@ public class BudgetController {
     }
 
     @PostMapping("/overall")
-    public ResponseEntity<BudgetDTO> createOverall(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(budgetService.createOverall(jwt));
+    public ResponseEntity<BudgetDTO> createOverall(@AuthenticationPrincipal Jwt jwt, @RequestParam int month, @RequestParam int year) {
+        return ResponseEntity.ok(budgetService.createOverall(jwt, month, year));
     }
 
 }

@@ -24,7 +24,7 @@ public class Budget {
     @Column(name = "category_id")
     private Long categoryId;
     @Column(nullable = false)
-    private BigDecimal amount;
+    private BigDecimal budget;
     @Column(nullable = false)
     private int month;
     @Column(nullable = false)
@@ -34,5 +34,14 @@ public class Budget {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
