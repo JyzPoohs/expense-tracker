@@ -7,6 +7,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/budgets")
 public class BudgetController {
@@ -17,13 +19,23 @@ public class BudgetController {
     }
 
     @GetMapping("/overall")
-    public ResponseEntity<BudgetDTO> getOverall(@AuthenticationPrincipal Jwt jwt, @RequestParam int month, @RequestParam int year) {
-        return ResponseEntity.ok(budgetService.getOverall(jwt, month, year));
+    public ResponseEntity<BudgetDTO> getOverallBudget(@AuthenticationPrincipal Jwt jwt, @RequestParam int month, @RequestParam int year) {
+        return ResponseEntity.ok(budgetService.getOverallBudget(jwt, month, year));
     }
 
     @PostMapping("/overall")
-    public ResponseEntity<BudgetDTO> createOverall(@AuthenticationPrincipal Jwt jwt, @RequestParam int month, @RequestParam int year) {
-        return ResponseEntity.ok(budgetService.createOverall(jwt, month, year));
+    public ResponseEntity<BudgetDTO> createOverallBudget(@AuthenticationPrincipal Jwt jwt, @RequestParam int month, @RequestParam int year) {
+        return ResponseEntity.ok(budgetService.createOverallBudget(jwt, month, year));
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<BudgetDTO>> getCategoryBudgets(@AuthenticationPrincipal Jwt jwt, @RequestParam int month, @RequestParam int year) {
+        return ResponseEntity.ok(budgetService.getCategoryBudgets(jwt, month, year));
+    }
+
+    @PostMapping("/category")
+    public ResponseEntity<BudgetDTO> createCategoryBudget(@AuthenticationPrincipal Jwt jwt, @RequestParam Long categoryId, @RequestParam int month, @RequestParam int year) {
+        return ResponseEntity.ok(budgetService.createCategoryBudget(jwt, categoryId, month, year));
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class BudgetService {
@@ -25,7 +26,7 @@ public class BudgetService {
         this.budgetRepository = budgetRepository;
     }
 
-    public BudgetDTO getOverall(Jwt jwt, int month, int year) {
+    public BudgetDTO getOverallBudget(Jwt jwt, int month, int year) {
 
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -39,8 +40,9 @@ public class BudgetService {
         return budgetMapper.toDTO(budget);
     }
 
+
     @Transactional
-    public BudgetDTO createOverall(Jwt jwt, int month, int year) {
+    public BudgetDTO createOverallBudget(Jwt jwt, int month, int year) {
 
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -56,6 +58,36 @@ public class BudgetService {
         Budget budget = Budget.builder()
                 .userId(userId)
                 .categoryId(null)
+                .budget(BigDecimal.ZERO)
+                .month(month)
+                .year(year)
+                .build();
+
+        Budget savedBudget = budgetRepository.save(budget);
+
+        return budgetMapper.toDTO(savedBudget);
+    }
+
+    public List<BudgetDTO> getCategoryBudgets(Jwt jwt, int month, int year) {
+        return budgetRepository.findByUserIdAndCategoryIdIsNotNullAndMonthAndYear(currentUserService.getCurrentUserId(jwt), month, year)
+                .stream().map(budgetMapper::toDTO).toList();
+    }
+
+    public BudgetDTO createCategoryBudget(Jwt jwt, Long categoryId, int month, int year) {
+        Long userId = currentUserService.getCurrentUserId(jwt);
+
+        boolean exists = budgetRepository.existsByUserIdAndCategoryIdAndMonthAndYear(userId, categoryId, month, year);
+
+        if (exists) {
+            throw new ConflictException(
+                    ErrorCode.BDG_ALREADY_EXISTS,
+                    String.format("This category budget already exists for %02d/%d", month, year)
+            );
+        }
+
+        Budget budget = Budget.builder()
+                .userId(userId)
+                .categoryId(categoryId)
                 .budget(BigDecimal.ZERO)
                 .month(month)
                 .year(year)
