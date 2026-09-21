@@ -3,6 +3,7 @@ package com.expense.tracker.service;
 import com.expense.tracker.constant.ErrorCode;
 import com.expense.tracker.dto.BudgetDTO;
 import com.expense.tracker.entity.Budget;
+import com.expense.tracker.exception.ConflictException;
 import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.mapper.BudgetMapper;
 import com.expense.tracker.repository.BudgetRepository;
@@ -11,10 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class BudgetService {
     private final CurrentUserService currentUserService;
     private final BudgetMapper budgetMapper;
@@ -27,27 +26,43 @@ public class BudgetService {
     }
 
     public BudgetDTO getOverall(Jwt jwt, int month, int year) {
+
         Long userId = currentUserService.getCurrentUserId(jwt);
 
         Budget budget = budgetRepository
                 .findByUserIdAndCategoryIdIsNullAndMonthAndYear(userId, month, year)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ErrorCode.BDG_NOT_FOUND,
+                        ErrorCode.SYS_NOT_FOUND,
                         String.format("Overall budget not found for %02d/%d", month, year)
                 ));
 
         return budgetMapper.toDTO(budget);
     }
 
+    @Transactional
     public BudgetDTO createOverall(Jwt jwt, int month, int year) {
+
+        Long userId = currentUserService.getCurrentUserId(jwt);
+
+        boolean exists = budgetRepository.existsByUserIdAndCategoryIdIsNullAndMonthAndYear(userId, month, year);
+
+        if (exists) {
+            throw new ConflictException(
+                    ErrorCode.BDG_ALREADY_EXISTS,
+                    String.format("Overall budget already exists for %02d/%d", month, year)
+            );
+        }
+
         Budget budget = Budget.builder()
-                .userId(currentUserService.getCurrentUserId(jwt))
+                .userId(userId)
                 .categoryId(null)
                 .budget(BigDecimal.ZERO)
                 .month(month)
                 .year(year)
                 .build();
 
-        return budgetMapper.toDTO(budgetRepository.save(budget));
+        Budget savedBudget = budgetRepository.save(budget);
+
+        return budgetMapper.toDTO(savedBudget);
     }
 }
