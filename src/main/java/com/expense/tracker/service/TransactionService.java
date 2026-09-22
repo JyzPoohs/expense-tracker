@@ -29,7 +29,7 @@ public class TransactionService {
     }
 
     public TransactionDTO create(Jwt jwt, TransactionDTO transactionDTO) {
-        transactionDTO.setUserId(currentUserService.getCurrentUser(jwt).getId());
+        transactionDTO.setUserId(currentUserService.getCurrentUserId(jwt));
         Transaction transaction = mapper.toEntity(transactionDTO);
         return mapper.toDTO(transactionRepository.save(transaction));
     }
