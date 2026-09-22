@@ -32,7 +32,7 @@ public class AuthController {
     
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
-    public String testAdmin() {
-        return "Admin access only";
+    public ResponseEntity<String> testAdmin() {
+        return ResponseEntity.ok("Admin access only");
     }
 }

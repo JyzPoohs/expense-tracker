@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import javax.naming.AuthenticationException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,9 +57,10 @@ public class GlobalExceptionHandler {
                 req, null);
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleNoHandlerFound(NoHandlerFoundException ex, HttpServletRequest req) {
-        log.warn("No handler error: {} {}", ex.getHttpMethod(), ex.getRequestURL());
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest req) {
+        log.warn("No resource found: {}", ex.getResourcePath());
+
         return buildResponse(
                 ErrorCode.SYS_NOT_FOUND.getCode(),
                 "The requested endpoint does not exist",
@@ -65,15 +68,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiErrorResponse> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
-        log.warn("Request method not support error: {}", ex.getMessage());
+    public ResponseEntity<ApiErrorResponse> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest req) {
+        log.warn("Request method not support error: {} {}", ex.getMethod(), req.getRequestURL());
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(ApiErrorResponse.builder()
                         .code(ErrorCode.SYS_METHOD_NOT_ALLOWED.getCode())
                         .message(ErrorCode.SYS_METHOD_NOT_ALLOWED.getDefaultMessage())
                         .status(HttpStatus.METHOD_NOT_ALLOWED.value())
                         .error(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
-                        .path(request.getRequestURI())
+                        .path(req.getRequestURI())
                         .timestamp(LocalDateTime.now())
                         .build());
     }
@@ -85,6 +88,14 @@ public class GlobalExceptionHandler {
         return buildResponse(ErrorCode.SYS_NOT_FOUND.getCode(),
                 ErrorCode.SYS_NOT_FOUND.getDefaultMessage(),
                 HttpStatus.NOT_FOUND,
+                req, null);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAuthorizationDenied(AuthorizationDeniedException ex, HttpServletRequest req) {
+        return buildResponse(ErrorCode.USR_FORBIDDEN.getCode(),
+                ErrorCode.USR_FORBIDDEN.getDefaultMessage(),
+                HttpStatus.FORBIDDEN,
                 req, null);
     }
 
