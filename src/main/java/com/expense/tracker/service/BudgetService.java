@@ -97,4 +97,24 @@ public class BudgetService {
 
         return budgetMapper.toDTO(savedBudget);
     }
+
+    public BudgetDTO update(Jwt jwt, Long id, BudgetDTO budgetDTO) {
+        Long userId = currentUserService.getCurrentUserId(jwt);
+
+        Budget budget = budgetRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BDG_NOT_FOUND));
+
+        budget.setBudget(budgetDTO.getBudget());
+
+        return budgetMapper.toDTO(budgetRepository.save(budget));
+    }
+
+    public void delete(Jwt jwt, Long id) {
+        Long userId = currentUserService.getCurrentUserId(jwt);
+
+        Budget budget = budgetRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BDG_NOT_FOUND));
+
+        budgetRepository.delete(budget);
+    }
 }
