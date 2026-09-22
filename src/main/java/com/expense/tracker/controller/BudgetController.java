@@ -1,7 +1,7 @@
 package com.expense.tracker.controller;
 
 import com.expense.tracker.dto.BudgetDTO;
-import com.expense.tracker.entity.BudgetUpdateRequest;
+import com.expense.tracker.dto.BudgetUpdateRequest;
 import com.expense.tracker.service.BudgetService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

@@ -3,7 +3,7 @@ package com.expense.tracker.service;
 import com.expense.tracker.constant.ErrorCode;
 import com.expense.tracker.dto.BudgetDTO;
 import com.expense.tracker.entity.Budget;
-import com.expense.tracker.entity.BudgetUpdateRequest;
+import com.expense.tracker.dto.BudgetUpdateRequest;
 import com.expense.tracker.exception.ConflictException;
 import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.mapper.BudgetMapper;
