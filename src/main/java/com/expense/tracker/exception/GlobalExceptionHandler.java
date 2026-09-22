@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,6 +53,29 @@ public class GlobalExceptionHandler {
                 ErrorCode.SYS_BAD_REQUEST.getDefaultMessage(),
                 HttpStatus.BAD_REQUEST,
                 req, null);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoHandlerFound(NoHandlerFoundException ex, HttpServletRequest req) {
+        log.warn("No handler error: {} {}", ex.getHttpMethod(), ex.getRequestURL());
+        return buildResponse(
+                ErrorCode.SYS_NOT_FOUND.getCode(),
+                "The requested endpoint does not exist",
+                HttpStatus.NOT_FOUND, req, null);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+        log.warn("Request method not support error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(ApiErrorResponse.builder()
+                        .code(ErrorCode.SYS_METHOD_NOT_ALLOWED.getCode())
+                        .message(ErrorCode.SYS_METHOD_NOT_ALLOWED.getDefaultMessage())
+                        .status(HttpStatus.METHOD_NOT_ALLOWED.value())
+                        .error(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
+                        .path(request.getRequestURI())
+                        .timestamp(LocalDateTime.now())
+                        .build());
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
