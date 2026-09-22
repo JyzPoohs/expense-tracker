@@ -22,7 +22,7 @@ public class BudgetDTO {
     private Long userId;
     private Long categoryId;
     @NotNull @Positive(message = "Budget must be greater than zero")
-    private BigDecimal budget;
+    private BigDecimal amount;
     @NotNull @Min(1) @Max(12)
     private Integer month;
     @Min(2000)

@@ -3,6 +3,7 @@ package com.expense.tracker.service;
 import com.expense.tracker.constant.ErrorCode;
 import com.expense.tracker.dto.BudgetDTO;
 import com.expense.tracker.entity.Budget;
+import com.expense.tracker.entity.BudgetUpdateRequest;
 import com.expense.tracker.exception.ConflictException;
 import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.mapper.BudgetMapper;
@@ -26,6 +27,7 @@ public class BudgetService {
         this.budgetRepository = budgetRepository;
     }
 
+    @Transactional(readOnly = true)
     public BudgetDTO getOverallBudget(Jwt jwt, int month, int year) {
 
         Long userId = currentUserService.getCurrentUserId(jwt);
@@ -33,7 +35,7 @@ public class BudgetService {
         Budget budget = budgetRepository
                 .findByUserIdAndCategoryIdIsNullAndMonthAndYear(userId, month, year)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ErrorCode.SYS_NOT_FOUND,
+                        ErrorCode.BDG_NOT_FOUND,
                         String.format("Overall budget not found for %02d/%d", month, year)
                 ));
 
@@ -58,7 +60,7 @@ public class BudgetService {
         Budget budget = Budget.builder()
                 .userId(userId)
                 .categoryId(null)
-                .budget(BigDecimal.ZERO)
+                .amount(BigDecimal.ZERO)
                 .month(month)
                 .year(year)
                 .build();
@@ -68,11 +70,13 @@ public class BudgetService {
         return budgetMapper.toDTO(savedBudget);
     }
 
+    @Transactional(readOnly = true)
     public List<BudgetDTO> getCategoryBudgets(Jwt jwt, int month, int year) {
         return budgetRepository.findByUserIdAndCategoryIdIsNotNullAndMonthAndYear(currentUserService.getCurrentUserId(jwt), month, year)
                 .stream().map(budgetMapper::toDTO).toList();
     }
 
+    @Transactional
     public BudgetDTO createCategoryBudget(Jwt jwt, Long categoryId, int month, int year) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -88,7 +92,7 @@ public class BudgetService {
         Budget budget = Budget.builder()
                 .userId(userId)
                 .categoryId(categoryId)
-                .budget(BigDecimal.ZERO)
+                .amount(BigDecimal.ZERO)
                 .month(month)
                 .year(year)
                 .build();
@@ -98,17 +102,19 @@ public class BudgetService {
         return budgetMapper.toDTO(savedBudget);
     }
 
-    public BudgetDTO update(Jwt jwt, Long id, BudgetDTO budgetDTO) {
+    @Transactional
+    public BudgetDTO update(Jwt jwt, Long id, BudgetUpdateRequest budgetDTO) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
         Budget budget = budgetRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.BDG_NOT_FOUND));
 
-        budget.setBudget(budgetDTO.getBudget());
+        budget.setAmount(budgetDTO.amount());
 
         return budgetMapper.toDTO(budgetRepository.save(budget));
     }
 
+    @Transactional
     public void delete(Jwt jwt, Long id) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 

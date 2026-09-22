@@ -11,7 +11,7 @@ public class BudgetMapper {
                 .id(budget.getId())
                 .userId(budget.getUserId())
                 .categoryId(budget.getCategoryId())
-                .budget(budget.getBudget())
+                .amount(budget.getAmount())
                 .month(budget.getMonth())
                 .year(budget.getYear())
                 .build();

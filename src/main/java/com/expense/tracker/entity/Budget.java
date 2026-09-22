@@ -24,7 +24,7 @@ public class Budget {
     @Column(name = "category_id")
     private Long categoryId;
     @Column(nullable = false)
-    private BigDecimal budget;
+    private BigDecimal amount;
     @Column(nullable = false)
     private int month;
     @Column(nullable = false)

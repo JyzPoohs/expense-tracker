@@ -1,7 +1,10 @@
 package com.expense.tracker.controller;
 
 import com.expense.tracker.dto.BudgetDTO;
+import com.expense.tracker.entity.BudgetUpdateRequest;
 import com.expense.tracker.service.BudgetService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +30,7 @@ public class BudgetController {
 
     @PostMapping("/overall")
     public ResponseEntity<BudgetDTO> createOverallBudget(@AuthenticationPrincipal Jwt jwt, @RequestParam int month, @RequestParam int year) {
-        return ResponseEntity.ok(budgetService.createOverallBudget(jwt, month, year));
+        return ResponseEntity.status(HttpStatus.CREATED).body(budgetService.createOverallBudget(jwt, month, year));
     }
 
     @GetMapping("/categories")
@@ -37,11 +40,11 @@ public class BudgetController {
 
     @PostMapping("/categories")
     public ResponseEntity<BudgetDTO> createCategoryBudget(@AuthenticationPrincipal Jwt jwt, @RequestParam Long categoryId, @RequestParam int month, @RequestParam int year) {
-        return ResponseEntity.ok(budgetService.createCategoryBudget(jwt, categoryId, month, year));
+        return ResponseEntity.status(HttpStatus.CREATED).body(budgetService.createCategoryBudget(jwt, categoryId, month, year));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BudgetDTO> update(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id, @RequestBody BudgetDTO budgetDTO) {
+    public ResponseEntity<BudgetDTO> update(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id, @RequestBody @Valid BudgetUpdateRequest budgetDTO) {
         return ResponseEntity.ok(budgetService.update(jwt, id, budgetDTO));
     }
 
