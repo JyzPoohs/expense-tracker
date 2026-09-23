@@ -20,7 +20,6 @@ public class AuthController {
     private final UserMapper userMapper;
 
     public AuthController(CurrentUserService currentUserService, UserMapper userMapper) {
-
         this.currentUserService = currentUserService;
         this.userMapper = userMapper;
     }
@@ -32,7 +31,7 @@ public class AuthController {
     
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
-    public String testAdmin() {
-        return "Admin access only";
+    public ResponseEntity<String> testAdmin() {
+        return ResponseEntity.ok("Admin access only");
     }
 }
