@@ -28,8 +28,8 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(transactionService.getById(id));
+    public ResponseEntity<TransactionDTO> getById(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        return ResponseEntity.ok(transactionService.getById(jwt, id));
     }
 
     @GetMapping
@@ -42,13 +42,13 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionDTO> update(@PathVariable Long id, @Valid @RequestBody TransactionDTO transactionDTO) {
-        return ResponseEntity.ok(transactionService.update(id, transactionDTO));
+    public ResponseEntity<TransactionDTO> update(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id, @Valid @RequestBody TransactionDTO transactionDTO) {
+        return ResponseEntity.ok(transactionService.update(jwt, id, transactionDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        transactionService.delete(id);
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        transactionService.delete(jwt, id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -34,8 +34,10 @@ public class TransactionService {
         return mapper.toDTO(transactionRepository.save(transaction));
     }
 
-    public TransactionDTO getById(Long id) {
-        Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
+    public TransactionDTO getById(Jwt jwt, Long id) {
+        Long userId = currentUserService.getCurrentUserId(jwt);
+
+        Transaction transaction = transactionRepository.findByIdAndUserId(userId, id).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.TRX_NOT_FOUND));
 
         return mapper.toDTO(transaction);
@@ -69,8 +71,10 @@ public class TransactionService {
                 .toList();
     }
 
-    public TransactionDTO update(Long id, TransactionDTO transactionDTO) {
-        Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
+    public TransactionDTO update(Jwt jwt, Long id, TransactionDTO transactionDTO) {
+        Long userId = currentUserService.getCurrentUserId(jwt);
+
+        Transaction transaction = transactionRepository.findByIdAndUserId(id, userId).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.TRX_NOT_FOUND));
 
         transaction.setNote(transactionDTO.getNote());
@@ -83,8 +87,10 @@ public class TransactionService {
         return mapper.toDTO(transactionRepository.save(transaction));
     }
 
-    public void delete(Long id) {
-        Transaction transaction = transactionRepository.findById(id).orElseThrow(() ->
+    public void delete(Jwt jwt, Long id) {
+        Long userId = currentUserService.getCurrentUserId(jwt);
+
+        Transaction transaction = transactionRepository.findByIdAndUserId(id, userId).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.TRX_NOT_FOUND));
 
         transactionRepository.delete(transaction);

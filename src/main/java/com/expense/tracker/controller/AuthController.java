@@ -20,7 +20,6 @@ public class AuthController {
     private final UserMapper userMapper;
 
     public AuthController(CurrentUserService currentUserService, UserMapper userMapper) {
-
         this.currentUserService = currentUserService;
         this.userMapper = userMapper;
     }
