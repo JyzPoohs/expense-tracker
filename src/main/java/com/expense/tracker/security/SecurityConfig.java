@@ -38,6 +38,8 @@ public class SecurityConfig {
     @Value("${cors.allowed-origins}")
     private String allowedOrigins;
 
+    private final ObjectMapper objectMapper;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -87,8 +89,7 @@ public class SecurityConfig {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        new ObjectMapper()
-                .registerModule(new JavaTimeModule())
+        objectMapper.registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .writeValue(res.getWriter(), body);
     }
@@ -107,8 +108,7 @@ public class SecurityConfig {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        new ObjectMapper()
-                .registerModule(new JavaTimeModule())
+        objectMapper.registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .writeValue(res.getWriter(), body);
     }

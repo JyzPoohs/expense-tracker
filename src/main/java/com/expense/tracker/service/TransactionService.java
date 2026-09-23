@@ -37,7 +37,7 @@ public class TransactionService {
     public TransactionDTO getById(Jwt jwt, Long id) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
-        Transaction transaction = transactionRepository.findByIdAndUserId(userId, id).orElseThrow(() ->
+        Transaction transaction = transactionRepository.findByIdAndUserId(id, userId).orElseThrow(() ->
                 new ResourceNotFoundException(ErrorCode.TRX_NOT_FOUND));
 
         return mapper.toDTO(transaction);

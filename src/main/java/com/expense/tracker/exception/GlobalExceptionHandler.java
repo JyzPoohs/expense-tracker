@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import javax.naming.AuthenticationException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -85,8 +84,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest req) {
         log.warn("Resource not found error: {}", ex.getMessage());
 
-        return buildResponse(ErrorCode.SYS_NOT_FOUND.getCode(),
-                ErrorCode.SYS_NOT_FOUND.getDefaultMessage(),
+        return buildResponse(ex.getErrorCode(),
+                ex.getMessage(),
                 HttpStatus.NOT_FOUND,
                 req, null);
     }
