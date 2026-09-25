@@ -20,14 +20,14 @@ public class CurrentUserService {
         return jwt.getSubject();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public User getCurrentUser(Jwt jwt) {
         return userRepository
                 .findByAuthUserId(jwt.getSubject())
                 .orElseGet(() -> userProvisioningService.provisionUser(jwt));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Long getCurrentUserId(Jwt jwt) {
         return this.getCurrentUser(jwt).getId();
     }
