@@ -19,11 +19,13 @@ public class SystemCategoryPreferenceService {
     }
 
     public SystemCategoryPreference createSystemCategoryPreference(Long userId) {
-        SystemCategoryPreference preference = SystemCategoryPreference.builder()
-                .userId(userId)
-                .preferences(createPreference())
-                .build();
-
-        return systemCategoryPreferenceRepository.save(preference);
+        return systemCategoryPreferenceRepository.findByUserId(userId)
+                .orElseGet(() -> {
+                    SystemCategoryPreference preference = SystemCategoryPreference.builder()
+                            .userId(userId)
+                            .preferences(createPreference())
+                            .build();
+                    return systemCategoryPreferenceRepository.save(preference);
+                });
     }
 }

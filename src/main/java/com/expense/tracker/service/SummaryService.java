@@ -42,7 +42,7 @@ public class SummaryService {
         BigDecimal currentTotalBalance = currentTotalIncome.subtract(currentTotalExpense);
 
         // Calculate dashboard summary for previous month
-        Month previousMonth = Month.of(LocalDateTime.now().getMonthValue() - 1);
+        Month previousMonth = LocalDateTime.now().getMonth().minus(1);;
 
         List<TransactionDTO> previousTransactions = transactionDTOS.stream()
                 .filter((transactionDTO -> transactionDTO.getDate().getMonth().equals(previousMonth))).toList();
