@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class ChartService {
     private final TransactionService transactionService;
 
@@ -29,6 +28,7 @@ public class ChartService {
         this.transactionService = transactionService;
     }
 
+    @Transactional(readOnly = true)
     public List<DashboardBarChartDTO> getDashboardBarChartData(Jwt jwt) {
         LocalDate today = LocalDate.now();
 
@@ -68,6 +68,7 @@ public class ChartService {
         return dashboardBarChartData;
     }
 
+    @Transactional(readOnly = true)
     public List<DashboardPieChartDTO> getDashboardPieChartData(Jwt jwt) {
         LocalDate today = LocalDate.now();
         List<TransactionDTO> transactions = transactionService.getAll(jwt, null, null, today.getMonthValue(), today.getYear());

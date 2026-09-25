@@ -43,7 +43,7 @@ public class BudgetService {
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public BudgetDTO createOverallBudget(Jwt jwt, int month, int year) {
 
         Long userId = currentUserService.getCurrentUserId(jwt);
@@ -76,7 +76,7 @@ public class BudgetService {
                 .stream().map(budgetMapper::toDTO).toList();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public BudgetDTO createCategoryBudget(Jwt jwt, Long categoryId, int month, int year) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -102,7 +102,7 @@ public class BudgetService {
         return budgetMapper.toDTO(savedBudget);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public BudgetDTO update(Jwt jwt, Long id, BudgetUpdateRequest budgetDTO) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -114,7 +114,7 @@ public class BudgetService {
         return budgetMapper.toDTO(budgetRepository.save(budget));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Jwt jwt, Long id) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 

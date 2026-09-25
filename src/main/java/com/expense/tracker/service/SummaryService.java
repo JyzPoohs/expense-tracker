@@ -15,7 +15,6 @@ import java.time.Month;
 import java.util.List;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class SummaryService {
     private final TransactionService transactionService;
 
@@ -23,6 +22,7 @@ public class SummaryService {
         this.transactionService = transactionService;
     }
 
+    @Transactional(readOnly = true)
     public DashboardSummaryDTO getDashboardSummary(Jwt jwt, String type, String category, Integer month, Integer year) {
         List<TransactionDTO> transactionDTOS = transactionService.getAll(jwt, type, category, month, year);
 
@@ -42,7 +42,7 @@ public class SummaryService {
         BigDecimal currentTotalBalance = currentTotalIncome.subtract(currentTotalExpense);
 
         // Calculate dashboard summary for previous month
-        Month previousMonth = LocalDateTime.now().getMonth().minus(1);;
+        Month previousMonth = LocalDateTime.now().getMonth().minus(1);
 
         List<TransactionDTO> previousTransactions = transactionDTOS.stream()
                 .filter((transactionDTO -> transactionDTO.getDate().getMonth().equals(previousMonth))).toList();

@@ -6,6 +6,7 @@ import com.expense.tracker.dto.SystemCategoryPreferenceDetail;
 import com.expense.tracker.entity.Category;
 import com.expense.tracker.entity.SystemCategory;
 import com.expense.tracker.entity.SystemCategoryPreference;
+import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.exception.SystemException;
 import com.expense.tracker.mapper.CategoryMapper;
 import com.expense.tracker.repository.CategoryRepository;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class CategoryService {
     private final ObjectMapper objectMapper;
     private final CategoryMapper categoryMapper;
@@ -46,13 +46,16 @@ public class CategoryService {
     }
 
     public SystemCategoryPreference getSystemCategoryPreferences(Long userId) {
-        return systemCategoryPreferenceRepository.findByUserId(userId);
+        return systemCategoryPreferenceRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.CAT_PREF_NOT_FOUND));
     }
 
+    @Transactional(readOnly = true)
     public List<Category> getAllUserCategories(Long userId) {
         return categoryRepository.findAllByUserId(userId);
     }
 
+    @Transactional(readOnly = true)
     public List<CategoryDTO> getAll(Jwt jwt) {
         try {
             Long userId = currentUserService.getCurrentUser(jwt).getId();
