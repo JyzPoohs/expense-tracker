@@ -16,7 +16,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper mapper;
@@ -28,12 +27,14 @@ public class TransactionService {
         this.currentUserService = currentUserService;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public TransactionDTO create(Jwt jwt, TransactionDTO transactionDTO) {
         transactionDTO.setUserId(currentUserService.getCurrentUserId(jwt));
         Transaction transaction = mapper.toEntity(transactionDTO);
         return mapper.toDTO(transactionRepository.save(transaction));
     }
 
+    @Transactional(readOnly = true)
     public TransactionDTO getById(Jwt jwt, Long id) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -43,6 +44,7 @@ public class TransactionService {
         return mapper.toDTO(transaction);
     }
 
+    @Transactional(readOnly = true)
     public List<TransactionDTO> getAll(Jwt jwt, String type, String category, Integer month, Integer year) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -71,6 +73,7 @@ public class TransactionService {
                 .toList();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public TransactionDTO update(Jwt jwt, Long id, TransactionDTO transactionDTO) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -87,6 +90,7 @@ public class TransactionService {
         return mapper.toDTO(transactionRepository.save(transaction));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Jwt jwt, Long id) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -96,6 +100,7 @@ public class TransactionService {
         transactionRepository.delete(transaction);
     }
 
+    @Transactional(readOnly = true)
     public List<TransactionDTO> getByDateBetween(Jwt jwt, LocalDateTime startDate, LocalDateTime endDate) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 

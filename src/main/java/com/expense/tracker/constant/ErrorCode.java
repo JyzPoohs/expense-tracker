@@ -44,6 +44,7 @@ public enum ErrorCode {
     CAT_NOT_FOUND          ("CAT-404001", "Category not found"),
     CAT_ALREADY_EXISTS     ("CAT-409001", "Category with this name already exists"),
     CAT_PREF_PARSE_ERROR   ("CAT-500001", "Failed to parse category preferences"),
+    CAT_PREF_NOT_FOUND     ("CAT-404002", "System Category Preference not found"),
 
     // BDG: Budget
     BDG_VALIDATION_ERROR   ("BDG-400001", "Budget validation failed"),
