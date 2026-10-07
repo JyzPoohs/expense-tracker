@@ -2,9 +2,8 @@ package com.expense.tracker.controller;
 
 import com.expense.tracker.constant.ErrorCode;
 import com.expense.tracker.dto.TransactionDTO;
-import com.expense.tracker.entity.Transaction;
 import com.expense.tracker.exception.GlobalExceptionHandler;
-import com.expense.tracker.service.CurrentUserService;
+import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.service.TransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +21,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TransactionController.class)
@@ -32,10 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TransactionControllerTest {
 
     @Autowired MockMvc mockMvc;
-    @Autowired ObjectMapper objectMapper;  // ✅ 用 Spring 的真实实例
+    @Autowired ObjectMapper objectMapper;
 
     @MockBean TransactionService transactionService;
-    @MockBean CurrentUserService currentUserService;
 
     private static final Long USER_ID = 10L;
     private static final Long TRX_ID = 1L;
@@ -94,4 +93,72 @@ class TransactionControllerTest {
                 .andExpect(jsonPath("$.code").value(ErrorCode.SYS_BAD_REQUEST.getCode()))
                 .andExpect(jsonPath("$.violations[0].field").value("amount"));
     }
+
+    @Test
+    void getById_found_returns200() throws Exception {
+        when(transactionService.getById(any(), eq(TRX_ID))).thenReturn(transactionDTO);
+
+        mockMvc.perform(get(BASE_URL + "/" + TRX_ID).with(USER_JWT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(TRX_ID))
+                .andExpect(jsonPath("$.amount").value(5000.00));
+    }
+
+    @Test
+    void getById_notFound_returns404() throws Exception {
+        when(transactionService.getById(any(), eq(TRX_ID)))
+                .thenThrow(new ResourceNotFoundException(ErrorCode.TRX_NOT_FOUND));
+
+        mockMvc.perform(get(BASE_URL + "/" + TRX_ID).with(USER_JWT))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(ErrorCode.TRX_NOT_FOUND.getCode()));
+    }
+
+    @Test
+    void getById_noToken_returns401() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + TRX_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void update_success_returns200() throws Exception {
+        when(transactionService.update(any(), eq(TRX_ID), any())).thenReturn(transactionDTO);
+
+        mockMvc.perform(put(BASE_URL + "/" + TRX_ID)
+                        .with(USER_JWT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transactionDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(TRX_ID));
+    }
+
+    @Test
+    void update_invalidBody_returns400() throws Exception {
+        String body = """
+            {
+               "note": "Salary",
+               "amount": -5000.00,
+               "type": "INCOME",
+               "category": "Salary",
+               "date": "2026-09-18T00:00:00",
+               "remarks": ""
+            }
+            """;
+
+        mockMvc.perform(put(BASE_URL + "/" + TRX_ID)
+                        .with(USER_JWT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorCode.SYS_BAD_REQUEST.getCode()))
+                .andExpect(jsonPath("$.violations[0].field").value("amount"));
+    }
+
+    @Test
+    void delete_success_returns204() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/" + TRX_ID).with(USER_JWT))
+                .andExpect(status().isNoContent());
+    }
+
+
 }
