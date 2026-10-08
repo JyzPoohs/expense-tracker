@@ -3,7 +3,6 @@ package com.expense.tracker.config;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +15,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Configuration
@@ -35,6 +35,7 @@ public class CacheConfig {
                                 .allowIfSubType("com.expense.tracker.")
                                 .allowIfSubType("java.util.")
                                 .allowIfSubType("java.time.")
+                                .allowIfSubType(BigDecimal.class)
                                 .build(),
                         ObjectMapper.DefaultTyping.NON_FINAL,
                         JsonTypeInfo.As.PROPERTY
