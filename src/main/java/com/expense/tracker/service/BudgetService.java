@@ -8,12 +8,18 @@ import com.expense.tracker.exception.ConflictException;
 import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.mapper.BudgetMapper;
 import com.expense.tracker.repository.BudgetRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static com.expense.tracker.config.CacheConfig.CACHE_BUDGETS_CATEGORY;
+import static com.expense.tracker.config.CacheConfig.CACHE_BUDGETS_OVERALL;
 
 @Service
 public class BudgetService {
@@ -28,6 +34,7 @@ public class BudgetService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_BUDGETS_OVERALL, key = "#jwt.subject + ':' + #month + ':' + #year")
     public BudgetDTO getOverallBudget(Jwt jwt, int month, int year) {
 
         Long userId = currentUserService.getCurrentUserId(jwt);
@@ -44,6 +51,10 @@ public class BudgetService {
 
 
     @Transactional(rollbackFor = Exception.class)
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_BUDGETS_OVERALL,  allEntries = true),
+            @CacheEvict(value = CACHE_BUDGETS_CATEGORY, allEntries = true)
+    })
     public BudgetDTO createOverallBudget(Jwt jwt, int month, int year) {
 
         Long userId = currentUserService.getCurrentUserId(jwt);
@@ -71,12 +82,17 @@ public class BudgetService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_BUDGETS_CATEGORY, key = "#jwt.subject + ':' + #month + ':' + #year")
     public List<BudgetDTO> getCategoryBudgets(Jwt jwt, int month, int year) {
         return budgetRepository.findByUserIdAndCategoryIdIsNotNullAndMonthAndYear(currentUserService.getCurrentUserId(jwt), month, year)
                 .stream().map(budgetMapper::toDTO).toList();
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_BUDGETS_OVERALL,  allEntries = true),
+            @CacheEvict(value = CACHE_BUDGETS_CATEGORY, allEntries = true)
+    })
     public BudgetDTO createCategoryBudget(Jwt jwt, Long categoryId, int month, int year) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -103,6 +119,10 @@ public class BudgetService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_BUDGETS_OVERALL,  allEntries = true),
+            @CacheEvict(value = CACHE_BUDGETS_CATEGORY, allEntries = true)
+    })
     public BudgetDTO update(Jwt jwt, Long id, BudgetUpdateRequest budgetDTO) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -115,6 +135,10 @@ public class BudgetService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_BUDGETS_OVERALL,  allEntries = true),
+            @CacheEvict(value = CACHE_BUDGETS_CATEGORY, allEntries = true)
+    })
     public void delete(Jwt jwt, Long id) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 

@@ -25,6 +25,11 @@ public class CacheConfig {
     public static final String CACHE_DASHBOARD_SUMMARY   = "dashboard:summary";
     public static final String CACHE_DASHBOARD_BAR_CHART = "dashboard:bar-chart";
     public static final String CACHE_DASHBOARD_PIE_CHART = "dashboard:pie-chart";
+    public static final String CACHE_TRANSACTIONS = "transactions";
+    public static final String CACHE_CATEGORIES = "categories";
+    public static final String CACHE_SYSTEM_CATEGORIES = "system-categories";
+    public static final String CACHE_BUDGETS_OVERALL = "budgets:overall";
+    public static final String CACHE_BUDGETS_CATEGORY = "budgets:category";
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
@@ -56,7 +61,12 @@ public class CacheConfig {
         Map<String, RedisCacheConfiguration> cacheConfigs = Map.of(
                 CACHE_DASHBOARD_SUMMARY,   defaultConfig.entryTtl(Duration.ofMinutes(5)),
                 CACHE_DASHBOARD_BAR_CHART, defaultConfig.entryTtl(Duration.ofMinutes(10)),
-                CACHE_DASHBOARD_PIE_CHART, defaultConfig.entryTtl(Duration.ofMinutes(5))
+                CACHE_DASHBOARD_PIE_CHART, defaultConfig.entryTtl(Duration.ofMinutes(5)),
+                CACHE_TRANSACTIONS, defaultConfig.entryTtl(Duration.ofMinutes(5)),
+                CACHE_CATEGORIES, defaultConfig.entryTtl(Duration.ofMinutes(30)),
+                CACHE_SYSTEM_CATEGORIES, defaultConfig.entryTtl(Duration.ofMinutes(24)),
+                CACHE_BUDGETS_OVERALL, defaultConfig.entryTtl(Duration.ofMinutes(10)),
+                CACHE_BUDGETS_CATEGORY, defaultConfig.entryTtl(Duration.ofMinutes(10))
         );
 
         return RedisCacheManager.builder(connectionFactory)

@@ -7,6 +7,7 @@ import com.expense.tracker.exception.ResourceNotFoundException;
 import com.expense.tracker.mapper.TransactionMapper;
 import com.expense.tracker.repository.TransactionRepository;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -33,9 +34,10 @@ public class TransactionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Caching(evict = {
-            @CacheEvict(value = CACHE_DASHBOARD_SUMMARY,   key = "#jwt.subject"),
-            @CacheEvict(value = CACHE_DASHBOARD_BAR_CHART, key = "#jwt.subject"),
-            @CacheEvict(value = CACHE_DASHBOARD_PIE_CHART, key = "#jwt.subject")
+            @CacheEvict(value = CACHE_DASHBOARD_SUMMARY,   key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_DASHBOARD_BAR_CHART, key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_DASHBOARD_PIE_CHART, key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_TRANSACTIONS, key = "#jwt.subject", allEntries = true)
     })
     public TransactionDTO create(Jwt jwt, TransactionDTO transactionDTO) {
         transactionDTO.setUserId(currentUserService.getCurrentUserId(jwt));
@@ -54,6 +56,10 @@ public class TransactionService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(
+            value = CACHE_TRANSACTIONS,
+            key = "#jwt.subject + ':' + #type + ':' + #category + ':' + #month + ':' + #year"
+    )
     public List<TransactionDTO> getAll(Jwt jwt, String type, String category, Integer month, Integer year) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -83,6 +89,12 @@ public class TransactionService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_DASHBOARD_SUMMARY,   key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_DASHBOARD_BAR_CHART, key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_DASHBOARD_PIE_CHART, key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_TRANSACTIONS, key = "#jwt.subject", allEntries = true)
+    })
     public TransactionDTO update(Jwt jwt, Long id, TransactionDTO transactionDTO) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 
@@ -100,6 +112,12 @@ public class TransactionService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Caching(evict = {
+            @CacheEvict(value = CACHE_DASHBOARD_SUMMARY,   key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_DASHBOARD_BAR_CHART, key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_DASHBOARD_PIE_CHART, key = "#jwt.subject", allEntries = true),
+            @CacheEvict(value = CACHE_TRANSACTIONS, key = "#jwt.subject", allEntries = true)
+    })
     public void delete(Jwt jwt, Long id) {
         Long userId = currentUserService.getCurrentUserId(jwt);
 

@@ -26,7 +26,7 @@ public class SummaryService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = CACHE_DASHBOARD_SUMMARY, key = "#jwt.subject")
+    @Cacheable(value = CACHE_DASHBOARD_SUMMARY, key = "#jwt.subject + ':' + #type + ':' + #category + ':' + #month + ':' + #year")
     public DashboardSummaryDTO getDashboardSummary(Jwt jwt, String type, String category, Integer month, Integer year) {
         List<TransactionDTO> transactionDTOS = transactionService.getAll(jwt, type, category, month, year);
 
