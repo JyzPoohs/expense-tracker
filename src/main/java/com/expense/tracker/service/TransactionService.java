@@ -37,7 +37,7 @@ public class TransactionService {
             @CacheEvict(value = CACHE_DASHBOARD_SUMMARY,   key = "#jwt.subject", allEntries = true),
             @CacheEvict(value = CACHE_DASHBOARD_BAR_CHART, key = "#jwt.subject", allEntries = true),
             @CacheEvict(value = CACHE_DASHBOARD_PIE_CHART, key = "#jwt.subject", allEntries = true),
-            @CacheEvict(value = CACHE_TRANSACTIONS, key = "#jwt.subject", allEntries = true)
+            @CacheEvict(value = CACHE_TRANSACTIONS, allEntries = true)
     })
     public TransactionDTO create(Jwt jwt, TransactionDTO transactionDTO) {
         transactionDTO.setUserId(currentUserService.getCurrentUserId(jwt));
@@ -93,7 +93,7 @@ public class TransactionService {
             @CacheEvict(value = CACHE_DASHBOARD_SUMMARY,   key = "#jwt.subject", allEntries = true),
             @CacheEvict(value = CACHE_DASHBOARD_BAR_CHART, key = "#jwt.subject", allEntries = true),
             @CacheEvict(value = CACHE_DASHBOARD_PIE_CHART, key = "#jwt.subject", allEntries = true),
-            @CacheEvict(value = CACHE_TRANSACTIONS, key = "#jwt.subject", allEntries = true)
+            @CacheEvict(value = CACHE_TRANSACTIONS, allEntries = true)
     })
     public TransactionDTO update(Jwt jwt, Long id, TransactionDTO transactionDTO) {
         Long userId = currentUserService.getCurrentUserId(jwt);
@@ -116,7 +116,7 @@ public class TransactionService {
             @CacheEvict(value = CACHE_DASHBOARD_SUMMARY,   key = "#jwt.subject", allEntries = true),
             @CacheEvict(value = CACHE_DASHBOARD_BAR_CHART, key = "#jwt.subject", allEntries = true),
             @CacheEvict(value = CACHE_DASHBOARD_PIE_CHART, key = "#jwt.subject", allEntries = true),
-            @CacheEvict(value = CACHE_TRANSACTIONS, key = "#jwt.subject", allEntries = true)
+            @CacheEvict(value = CACHE_TRANSACTIONS, allEntries = true)
     })
     public void delete(Jwt jwt, Long id) {
         Long userId = currentUserService.getCurrentUserId(jwt);

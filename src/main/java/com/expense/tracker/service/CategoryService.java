@@ -45,6 +45,8 @@ public class CategoryService {
         this.currentUserService = currentUserService;
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_SYSTEM_CATEGORIES, key = "'all'")
     public List<SystemCategory> getAllSystemCategories() {
         return systemCategoryRepository.findAll();
     }
@@ -55,13 +57,13 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = CACHE_CATEGORIES, key = "'all'")
+    @Cacheable(value = CACHE_CATEGORIES, key = "#userId")
     public List<Category> getAllUserCategories(Long userId) {
         return categoryRepository.findAllByUserId(userId);
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = CACHE_SYSTEM_CATEGORIES, key = "#jwt.subject")
+    @Cacheable(value = CACHE_CATEGORIES, key = "'all'")
     public List<CategoryDTO> getAll(Jwt jwt) {
         try {
             Long userId = currentUserService.getCurrentUser(jwt).getId();

@@ -64,7 +64,7 @@ public class CacheConfig {
                 CACHE_DASHBOARD_PIE_CHART, defaultConfig.entryTtl(Duration.ofMinutes(5)),
                 CACHE_TRANSACTIONS, defaultConfig.entryTtl(Duration.ofMinutes(5)),
                 CACHE_CATEGORIES, defaultConfig.entryTtl(Duration.ofMinutes(30)),
-                CACHE_SYSTEM_CATEGORIES, defaultConfig.entryTtl(Duration.ofMinutes(24)),
+                CACHE_SYSTEM_CATEGORIES, defaultConfig.entryTtl(Duration.ofHours(24)),
                 CACHE_BUDGETS_OVERALL, defaultConfig.entryTtl(Duration.ofMinutes(10)),
                 CACHE_BUDGETS_CATEGORY, defaultConfig.entryTtl(Duration.ofMinutes(10))
         );
