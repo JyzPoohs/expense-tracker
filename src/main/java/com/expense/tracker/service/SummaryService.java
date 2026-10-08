@@ -4,6 +4,7 @@ import com.expense.tracker.constant.TransactionType;
 import com.expense.tracker.dto.DashboardSummaryDTO;
 import com.expense.tracker.dto.TransactionDTO;
 import com.expense.tracker.utils.TransactionUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
+import static com.expense.tracker.config.CacheConfig.CACHE_DASHBOARD_SUMMARY;
+
 @Service
 public class SummaryService {
     private final TransactionService transactionService;
@@ -23,6 +26,7 @@ public class SummaryService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_DASHBOARD_SUMMARY, key = "#jwt.subject + ':' + #type + ':' + #category + ':' + #month + ':' + #year")
     public DashboardSummaryDTO getDashboardSummary(Jwt jwt, String type, String category, Integer month, Integer year) {
         List<TransactionDTO> transactionDTOS = transactionService.getAll(jwt, type, category, month, year);
 

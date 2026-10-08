@@ -1,7 +1,8 @@
-package com.expense.tracker.security;
+package com.expense.tracker.config;
 
 import com.expense.tracker.constant.ErrorCode;
 import com.expense.tracker.exception.ApiErrorResponse;
+import com.expense.tracker.security.KeycloakJwtAuthenticationConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

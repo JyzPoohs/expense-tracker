@@ -14,6 +14,7 @@ import com.expense.tracker.repository.SystemCategoryPreferenceRepository;
 import com.expense.tracker.repository.SystemCategoryRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.expense.tracker.config.CacheConfig.CACHE_CATEGORIES;
+import static com.expense.tracker.config.CacheConfig.CACHE_SYSTEM_CATEGORIES;
 
 @Service
 public class CategoryService {
@@ -41,6 +45,8 @@ public class CategoryService {
         this.currentUserService = currentUserService;
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_SYSTEM_CATEGORIES, key = "'all'")
     public List<SystemCategory> getAllSystemCategories() {
         return systemCategoryRepository.findAll();
     }
@@ -51,11 +57,13 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_CATEGORIES, key = "#userId")
     public List<Category> getAllUserCategories(Long userId) {
         return categoryRepository.findAllByUserId(userId);
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_CATEGORIES, key = "#jwt.subject")
     public List<CategoryDTO> getAll(Jwt jwt) {
         try {
             Long userId = currentUserService.getCurrentUser(jwt).getId();
