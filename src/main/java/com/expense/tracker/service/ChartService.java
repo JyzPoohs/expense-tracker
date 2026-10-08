@@ -5,6 +5,7 @@ import com.expense.tracker.dto.DashboardBarChartDTO;
 import com.expense.tracker.dto.DashboardPieChartDTO;
 import com.expense.tracker.dto.TransactionDTO;
 import com.expense.tracker.utils.TransactionUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.expense.tracker.config.CacheConfig.CACHE_DASHBOARD_BAR_CHART;
+import static com.expense.tracker.config.CacheConfig.CACHE_DASHBOARD_PIE_CHART;
+
 @Service
 public class ChartService {
     private final TransactionService transactionService;
@@ -29,6 +33,7 @@ public class ChartService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_DASHBOARD_BAR_CHART, key = "#jwt.subject")
     public List<DashboardBarChartDTO> getDashboardBarChartData(Jwt jwt) {
         LocalDate today = LocalDate.now();
 
@@ -69,6 +74,7 @@ public class ChartService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = CACHE_DASHBOARD_PIE_CHART, key = "#jwt.subject")
     public List<DashboardPieChartDTO> getDashboardPieChartData(Jwt jwt) {
         LocalDate today = LocalDate.now();
         List<TransactionDTO> transactions = transactionService.getAll(jwt, null, null, today.getMonthValue(), today.getYear());
