@@ -63,7 +63,7 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = CACHE_CATEGORIES, key = "'all'")
+    @Cacheable(value = CACHE_CATEGORIES, key = "#jwt.subject")
     public List<CategoryDTO> getAll(Jwt jwt) {
         try {
             Long userId = currentUserService.getCurrentUser(jwt).getId();
